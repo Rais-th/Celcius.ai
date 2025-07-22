@@ -21,6 +21,121 @@ import os
 from datetime import datetime
 from io import BytesIO
 
+# Translation dictionaries for multilingual support
+# English translations
+EN = {
+    # Sidebar elements
+    "app_title": "SEDIVER Celcius AI",
+    "control_panel": "Control Panel",
+    "control_subtitle": "Specialized analysis for SEDIVER R&D team",
+    "data_files": "📁 Data Files",
+    "upload_files": "Upload thermal data files",
+    "upload_help": "Upload position files (e.g., cz_position3.dat, 27517_recap_temperature.xlsx, etc.)",
+    "select_analysis": "Select Analysis Type:",
+    "select_position": "Select Position:",
+    "upload_more": "📁 Please upload more positions above to see available options",
+    "position_help": "Upload multiple position files (.dat, .xlsx, .csv) to enable position selection and analysis",
+    "analysis_help": "Choose the type of analysis to perform",
+    "language": "Language",
+    
+    # Analysis types
+    "temp_curves": "Temperature Curves Over Time",
+    "glass_shell": "Individual Glass Shell Analysis",
+    "peak_temp": "Peak Temperature Summary",
+    "multi_position": "Multi-Position Composite",
+    "interactive": "Interactive Plotly View",
+    "thermal_journey": "Full Line Thermal Journey",
+    "ai_summary": "AI Summary & Reports",
+    
+    # Main content
+    "upload_prompt": "⬅︎ Upload your toughening data files (.dat format) to begin thermal analysis",
+    "expected_format": "📋 Expected Data Format",
+    "file_naming": "📁 File Naming Convention:",
+    "single_position": "Single position:",
+    "multiple_positions": "Multiple positions:",
+    "analysis_capabilities": "🎯 Analysis Capabilities:",
+    "plateau_detection": "✅ Automatic plateau detection for glass shells",
+    "peak_extraction": "✅ Peak temperature extraction",
+    "production_rate": "✅ Production rate calculation (pcs/min)",
+    "thermal_profiling": "✅ Multi-sensor thermal profiling",
+    "journey_reconstruction": "✅ Cross-position journey reconstruction",
+    
+    # AI section
+    "ai_enhancement": "🤖 AI Enhancement (Optional)",
+    "enhance_with_ai": "🧠 Enhance with AI Analysis",
+    "ai_help": "Use AI to generate intelligent insights and recommendations",
+    "ai_key_required": "🔑 AI enhancement requires OpenAI API key (configure in AI Analysis tab)",
+    "select_ai_sections": "Select AI-enhanced sections:",
+    "ai_will_enhance": "✅ AI will enhance:",
+    "upload_to_use": "📁 Please upload thermal data files to use the Report Template Generator",
+    
+    # Report sections
+    "download_report": "📄 Download Report",
+    "download_help": "Download your custom thermal analysis report",
+    "generate_first": "Generate a report first to enable download",
+    "executive_summary": "Executive Summary",
+    "quality_assessment": "Quality Assessment",
+    "recommendations": "Recommendations",
+    "predictive_insights": "Predictive Insights"
+}
+
+# French translations
+FR = {
+    # Sidebar elements
+    "app_title": "SEDIVER Celcius AI",
+    "control_panel": "Tour de Contrôle",
+    "control_subtitle": "Analyse spécialisée pour l'équipe R&D SEDIVER",
+    "data_files": "📁 Fichiers de Données",
+    "upload_files": "Télécharger des fichiers thermiques",
+    "upload_help": "Télécharger des fichiers de position (ex: cz_position3.dat, 27517_recap_temperature.xlsx, etc.)",
+    "select_analysis": "Sélectionner le Type d'Analyse:",
+    "select_position": "Sélectionner la Position:",
+    "upload_more": "📁 Rajoutez de positions",
+    "position_help": "Téléchargez plusieurs fichiers de position (.dat, .xlsx, .csv) pour activer la sélection et l'analyse des positions",
+    "analysis_help": "Choisissez le type d'analyse à effectuer",
+    "language": "Langue",
+    
+    # Analysis types
+    "temp_curves": "Courbes de Température dans le Temps",
+    "glass_shell": "Analyse Individuelle de Coquille en Verre",
+    "peak_temp": "Résumé des Températures Maximales",
+    "multi_position": "Composite Multi-Positions",
+    "interactive": "Vue Interactive Plotly",
+    "thermal_journey": "Parcours Thermique Complet",
+    "ai_summary": "Résumé IA & Rapports",
+    
+    # Main content
+    "upload_prompt": "⬅︎    Placez ici votre/vos fichiers en format (.dat) pour commencer l'analyse thermique",
+    "expected_format": "📋 Format de Données Attendu",
+    "file_naming": "📁 Exemples:",
+    "single_position": "Position unique:",
+    "multiple_positions": "Positions multiples:",
+    "analysis_capabilities": "🎯 Capacités d'Analyse:",
+    "plateau_detection": "✅ Détection automatique des plateaux pour les coquilles en verre",
+    "peak_extraction": "✅ Extraction des températures maximales",
+    "production_rate": "✅ Calcul du taux de production (pièces/min)",
+    "thermal_profiling": "✅ Profilage thermique multi-capteurs",
+    "journey_reconstruction": "✅ Reconstruction du parcours entre positions",
+    
+    # AI section
+    "ai_enhancement": "🤖 Amélioration par IA (Optionnel)",
+    "enhance_with_ai": "🧠 Améliorer avec l'Analyse IA",
+    "ai_help": "Utilisez l'IA pour générer des insights intelligents et des recommandations",
+    "ai_key_required": "🔑 L'amélioration par IA nécessite une clé API OpenAI (configurer dans l'onglet Analyse IA)",
+    "select_ai_sections": "Sélectionnez les sections améliorées par IA:",
+    "ai_will_enhance": "✅ L'IA améliorera:",
+    "upload_to_use": "📁 Veuillez télécharger des fichiers de données thermiques pour utiliser le Générateur de Modèles de Rapport",
+    
+    # Report sections
+    "download_report": "📄 Télécharger le Rapport",
+    "download_help": "Téléchargez votre rapport d'analyse thermique personnalisé",
+    "generate_first": "Générez d'abord un rapport pour activer le téléchargement",
+    "executive_summary": "Résumé Exécutif",
+    "quality_assessment": "Évaluation de la Qualité",
+    "recommendations": "Recommandations",
+    "predictive_insights": "Perspectives Prédictives"
+}
+
 # Load environment variables
 load_dotenv()
 
@@ -31,6 +146,19 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Initialize language in session state if not already set
+if 'language' not in st.session_state:
+    st.session_state['language'] = 'EN'
+
+# Function to get text based on current language
+def get_text(key):
+    lang = st.session_state['language']
+    if lang == 'EN':
+        return EN.get(key, key)
+    elif lang == 'FR':
+        return FR.get(key, key)
+    return key
 
 # Custom CSS
 st.markdown("""
@@ -525,31 +653,36 @@ def generate_pdf_report(plateaus, df, fig, report_title="Thermal Analysis Report
     return pdf_bytes
 
 # Header
-st.markdown('<h1 class="main-header">SEDIVER Celcius AI</h1>', unsafe_allow_html=True)
+st.markdown(f'<h1 class="main-header">{get_text("app_title")}</h1>', unsafe_allow_html=True)
+
+# Language selector in sidebar
+def change_language():
+    # Update all text when language changes
+    st.experimental_rerun()
 
 # Sidebar - Apple-style Control Panel
-st.sidebar.markdown("""
+st.sidebar.markdown(f"""
 <div class="apple-control-panel">
-    <div class="apple-control-title">Control Panel</div>
-    <div class="apple-control-subtitle">Specialized analysis for SEDIVER R&D team</div>
+    <div class="apple-control-title">{get_text("control_panel")}</div>
+    <div class="apple-control-subtitle">{get_text("control_subtitle")}</div>
 </div>
 """, unsafe_allow_html=True)
 
 # File Upload Section in Control Panel
-st.sidebar.markdown("""
+st.sidebar.markdown(f"""
 <div style="margin: 16px 0;">
     <div style="color: #ffffff; font-size: 16px; font-weight: 500; margin-bottom: 8px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-        📁 Data Files
+        {get_text("data_files")}
     </div>
 </div>
 """, unsafe_allow_html=True)
 
 # File upload for toughening data in sidebar
 uploaded_files = st.sidebar.file_uploader(
-    "Upload thermal data files",
+    get_text("upload_files"),
     type=["dat", "xlsx", "csv", "txt"],
     accept_multiple_files=True,
-    help="Upload position files (e.g., cz_position3.dat, 27517_recap_temperature.xlsx, etc.)",
+    help=get_text("upload_help"),
     label_visibility="collapsed"
 )
 
@@ -557,34 +690,31 @@ uploaded_files = st.sidebar.file_uploader(
 st.sidebar.markdown("<hr>", unsafe_allow_html=True)
 
 # Main Controls in Sidebar - Always visible
-analysis_type = st.sidebar.selectbox(
-    "Select Analysis Type:",
-    ["Temperature Curves Over Time", "Individual Glass Shell Analysis", "Peak Temperature Summary", "Multi-Position Composite", "Interactive Plotly View", "Full Line Thermal Journey", "AI Summary & Reports"],
-    key="main_analysis_type",
-    help="Choose the type of analysis to perform"
-)
+
 
 # Initialize position_data if not exists
 if 'position_data' not in locals():
     position_data = {}
 
-# Position Selection - Show placeholder if no data loaded
-if position_data:
-    selected_position = st.sidebar.selectbox(
-        "Select Position:", 
-        list(position_data.keys()),
-        key="main_position_select",
-        help="Select a position to analyze"
-    )
-else:
-    st.sidebar.selectbox(
-        "Select Position:", 
-        ["📁 Please upload more positions above to see available options"],
-        disabled=True,
-        key="main_position_select_disabled",
-        help="Upload multiple position files (.dat, .xlsx, .csv) to enable position selection and analysis"
-    )
-    selected_position = None
+# Define analysis_type as a placeholder since the selectbox was removed
+analysis_type = "all_sections"
+
+# Language selector at the bottom of sidebar
+st.sidebar.markdown("<hr>", unsafe_allow_html=True)
+
+language_options = {"EN": "English", "FR": "Français"}
+selected_lang = st.sidebar.selectbox(
+    get_text("language"),
+    options=list(language_options.keys()),
+    format_func=lambda x: language_options[x],
+    key="language_selector",
+    index=0 if st.session_state['language'] == 'EN' else 1
+)
+
+# Update language in session state when changed
+if selected_lang != st.session_state['language']:
+    st.session_state['language'] = selected_lang
+    change_language()
 
 if uploaded_files:
     # Cache hygiene - clear stale data on new file upload
@@ -962,9 +1092,32 @@ if uploaded_files:
         
         st.markdown("---")
         
+        # Position Selection - Show after data is loaded
+        if position_data:
+            if len(position_data) == 1:
+                # Auto-select if only one position
+                selected_position = list(position_data.keys())[0]
+                st.sidebar.info(f"📍 Auto-selected: {selected_position}")
+            else:
+                # Show dropdown for multiple positions
+                selected_position = st.sidebar.selectbox(
+                    get_text("select_position"), 
+                    list(position_data.keys()),
+                    key="main_position_select",
+                    help=get_text("select_position")
+                )
+        else:
+            st.sidebar.selectbox(
+                get_text("select_position"), 
+                [get_text("upload_more")],
+                disabled=True,
+                key="main_position_select_disabled",
+                help=get_text("position_help")
+            )
+            selected_position = None
+
         # Use analysis type and position from sidebar controls
-        if analysis_type:
-            if analysis_type == "Temperature Curves Over Time":
+        if True:
                 st.subheader("🌡️ Temperature Curves Over Time")
                 
                 if not selected_position:
@@ -981,54 +1134,54 @@ if uploaded_files:
                 else:
                     # Use position from sidebar
                     df = position_data[selected_position]['data']
-                
-                # Show data summary
-                st.subheader("📊 Data Summary")
-                col1, col2, col3, col4 = st.columns(4)
-                with col1:
-                    st.metric("Total Samples", f"{len(df):,}")
-                with col2:
-                    st.metric("Duration", f"{df['Time_seconds'].max():.1f}s")
-                with col3:
-                    sensor_cols = [col for col in df.columns if col not in ['Time', 'Time_seconds']]
-                    st.metric("Sensors", len(sensor_cols))
-                with col4:
-                    temp_range = df[sensor_cols].max().max() - df[sensor_cols].min().min()
-                    st.metric("Temp Range", f"{temp_range:.1f}°C")
-                
-                # Detect stable regions and transitions
-                st.subheader("🔍 Dynamic Plateau Detection Settings")
-                col1, col2, col3 = st.columns(3)
-                
-                with col1:
-                    flat_th = st.slider("Flatness (°C)", 2, 10, 5)
-                with col2:
-                    min_dur = st.slider("Min plateau (s)", 1, 20, 2)
-                with col3:
-                    # Create sensor options with Head as default
-                    sensor_options = []
-                    if 'Head' in df.columns:
-                        sensor_options.append('Head')
                     
-                    # Add numbered sensors (1-4)
-                    for i in range(1, 5):
-                        if str(i) in df.columns:
-                            sensor_options.append(str(i))
+                    # Show data summary
+                    st.subheader("📊 Data Summary")
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("Total Samples", f"{len(df):,}")
+                    with col2:
+                        st.metric("Duration", f"{df['Time_seconds'].max():.1f}s")
+                    with col3:
+                        sensor_cols = [col for col in df.columns if col not in ['Time', 'Time_seconds']]
+                        st.metric("Sensors", len(sensor_cols))
+                    with col4:
+                        temp_range = df[sensor_cols].max().max() - df[sensor_cols].min().min()
+                        st.metric("Temp Range", f"{temp_range:.1f}°C")
                     
-                    # Add any other sensors and average option
-                    other_sensors = [col for col in df.columns if col not in ['Time', 'Time_seconds', 'Head'] + [str(i) for i in range(1, 5)]]
-                    sensor_options.extend(other_sensors)
+                    # Detect stable regions and transitions
+                    st.subheader("🔍 Dynamic Plateau Detection Settings")
+                    col1, col2, col3 = st.columns(3)
                     
-                    # Add average option
-                    if len([col for col in df.columns if col not in ['Time', 'Time_seconds']]) > 1:
-                        sensor_options.append('Average')
-                    
-                    sensor_for_detection = st.selectbox(
-                        "Sensor for Detection:", 
-                        sensor_options, 
-                        index=0,
-                        help="Select which sensor to use for plateau detection"
-                    )
+                    with col1:
+                        flat_th = st.slider("Flatness (°C)", 2, 10, 5)
+                    with col2:
+                        min_dur = st.slider("Min plateau (s)", 1, 20, 2)
+                    with col3:
+                        # Create sensor options with Head as default
+                        sensor_options = []
+                        if 'Head' in df.columns:
+                            sensor_options.append('Head')
+                        
+                        # Add numbered sensors (1-4)
+                        for i in range(1, 5):
+                            if str(i) in df.columns:
+                                sensor_options.append(str(i))
+                        
+                        # Add any other sensors and average option
+                        other_sensors = [col for col in df.columns if col not in ['Time', 'Time_seconds', 'Head'] + [str(i) for i in range(1, 5)]]
+                        sensor_options.extend(other_sensors)
+                        
+                        # Add average option
+                        if len([col for col in df.columns if col not in ['Time', 'Time_seconds']]) > 1:
+                            sensor_options.append('Average')
+                        
+                        sensor_for_detection = st.selectbox(
+                            "Sensor for Detection:", 
+                            sensor_options, 
+                            index=0,
+                            help="Select which sensor to use for plateau detection"
+                        )
                 
                 # Calculate data resolution
                 df_res = 1.0 / (df['Time_seconds'].iloc[1] - df['Time_seconds'].iloc[0]) if len(df) > 1 else 1.0
@@ -1371,125 +1524,120 @@ if uploaded_files:
                             st.write(f"- DataFrame shape: {df.shape}")
                             st.write(f"- Figure type: {type(fig)}")
             
-        elif analysis_type == "Individual Glass Shell Analysis":
-            st.subheader("🔍 Individual Glass Shell Analysis")
-            
-            if not selected_position:
-                st.info("📁 Please upload data files first to begin individual shell analysis.")
-                st.markdown("""
-                **This analysis will provide:**
-                - 🎯 Individual glass shell isolation and analysis
-                - 📊 Peak temperature detection for each sensor
-                - 📈 Shell-specific temperature curves with peak markers
-                - ⏱️ Configurable shell duration settings
-                - 📋 Comprehensive shell metrics and statistics
-                - 🔍 Shell-by-shell quality assessment
-                """)
-            else:
-                selected_position_shell = st.selectbox(
-                    "Select Position:", 
-                    list(position_data.keys()), 
-                    key="shell_position",
-                    help="Choose which position to analyze for individual shells"
-                )
-                df = position_data[selected_position_shell]['data']
+        if True:
+                st.subheader("🔍 Individual Glass Shell Analysis")
                 
-                # Simple shell detection for demo
-                shell_duration = st.slider("Approximate Shell Duration (seconds)", 5.0, 30.0, 15.0)
-                total_time = df['Time_seconds'].max()
-                num_shells = int(total_time / shell_duration)
-                
-                shell_number = st.selectbox(
-                    "Select Shell Number:", 
-                    list(range(1, num_shells + 1)),
-                    help="Choose which shell to analyze in detail"
-                )
-                
-                # Extract shell data
-                start_time = (shell_number - 1) * shell_duration
-                end_time = shell_number * shell_duration
-                
-                shell_data = df[(df['Time_seconds'] >= start_time) & (df['Time_seconds'] <= end_time)].copy()
-                
-                if not shell_data.empty:
-                    # Create individual shell plot
-                    fig = go.Figure()
+                if not selected_position:
+                    st.info("📁 Please upload data files first to begin individual shell analysis.")
+                    st.markdown("""
+                    **This analysis will provide:**
+                    - 🎯 Individual glass shell isolation and analysis
+                    - 📊 Peak temperature detection for each sensor
+                    - 📈 Shell-specific temperature curves with peak markers
+                    - ⏱️ Configurable shell duration settings
+                    - 📋 Comprehensive shell metrics and statistics
+                    - 🔍 Shell-by-shell quality assessment
+                    """)
+                else:
+                    # Use position from sidebar
+                    df = position_data[selected_position]['data']
                     
-                    sensor_columns = [col for col in shell_data.columns if col not in ['Time', 'Time_seconds']]
-                    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd']
+                    # Simple shell detection for demo
+                    shell_duration = st.slider("Approximate Shell Duration (seconds)", 5.0, 30.0, 15.0)
+                    total_time = df['Time_seconds'].max()
+                    num_shells = int(total_time / shell_duration)
                     
-                    peak_temps = {}
-                    
-                    for i, sensor in enumerate(sensor_columns):
-                        # Check if sensor has valid data
-                        sensor_data = shell_data[sensor].dropna()
-                        
-                        if len(sensor_data) == 0:
-                            # Skip sensors with no valid data
-                            st.warning(f"⚠️ No valid data for sensor {sensor} in this shell")
-                            continue
-                        
-                        peak_temp = sensor_data.max()
-                        peak_temps[sensor] = peak_temp
-                        
-                        fig.add_trace(go.Scatter(
-                            x=shell_data['Time_seconds'],
-                            y=shell_data[sensor],
-                            mode='lines+markers',
-                            name=f"{sensor} (Peak: {peak_temp:.1f}°C)",
-                            line=dict(color=colors[i % len(colors)], width=3),
-                            marker=dict(size=4)
-                        ))
-                        
-                        # Add peak marker with validation
-                        peak_idx = shell_data[sensor].idxmax()
-                        
-                        # Validate peak_idx is not NaN
-                        if pd.notna(peak_idx) and peak_idx in shell_data.index:
-                            peak_time = shell_data.loc[peak_idx, 'Time_seconds']
-                            
-                            fig.add_trace(go.Scatter(
-                                x=[peak_time],
-                                y=[peak_temp],
-                                mode='markers',
-                                name=f"{sensor} Peak",
-                                marker=dict(color=colors[i % len(colors)], size=12, symbol='star'),
-                                showlegend=False
-                            ))
-                    
-                    fig.update_layout(
-                        title=f"Shell #{shell_number} Analysis - {selected_position_shell}<br>Duration: {end_time-start_time:.1f}s",
-                        xaxis_title="Time (seconds)",
-                        yaxis_title="Temperature (°C)",
-                        height=500
+                    shell_number = st.selectbox(
+                        "Select Shell Number:", 
+                        list(range(1, num_shells + 1)),
+                        help="Choose which shell to analyze in detail"
                     )
                     
-                    st.plotly_chart(fig, use_container_width=True)
+                    # Extract shell data
+                    start_time = (shell_number - 1) * shell_duration
+                    end_time = shell_number * shell_duration
                     
-                    # Display metrics
-                    st.subheader("📊 Shell Metrics")
+                    shell_data = df[(df['Time_seconds'] >= start_time) & (df['Time_seconds'] <= end_time)].copy()
                     
-                    if peak_temps:
-                        cols = st.columns(len(peak_temps))
+                    if not shell_data.empty:
+                        # Create individual shell plot
+                        fig = go.Figure()
                         
-                        for i, (sensor, peak) in enumerate(peak_temps.items()):
-                            with cols[i]:
-                                st.metric(f"{sensor} Peak", f"{peak:.1f}°C")
+                        sensor_columns = [col for col in shell_data.columns if col not in ['Time', 'Time_seconds']]
+                        colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd']
                         
-                        # Additional metrics
-                        col1, col2, col3 = st.columns(3)
-                        with col1:
-                            st.metric("Duration", f"{end_time-start_time:.1f}s")
-                        with col2:
-                            avg_peak = np.mean(list(peak_temps.values()))
-                            st.metric("Avg Peak Temp", f"{avg_peak:.1f}°C")
-                        with col3:
-                            temp_range = max(peak_temps.values()) - min(peak_temps.values())
-                            st.metric("Temp Range", f"{temp_range:.1f}°C")
-                    else:
-                        st.error("❌ No valid sensor data found for this shell. Please check your data or try a different shell number.")
+                        peak_temps = {}
+                        
+                        for i, sensor in enumerate(sensor_columns):
+                             # Check if sensor has valid data
+                             sensor_data = shell_data[sensor].dropna()
+                             
+                             if len(sensor_data) == 0:
+                                 # Skip sensors with no valid data
+                                 st.warning(f"⚠️ No valid data for sensor {sensor} in this shell")
+                                 continue
+                             
+                             peak_temp = sensor_data.max()
+                             peak_temps[sensor] = peak_temp
+                             
+                             fig.add_trace(go.Scatter(
+                                 x=shell_data['Time_seconds'],
+                                 y=shell_data[sensor],
+                                 mode='lines+markers',
+                                 name=f"{sensor} (Peak: {peak_temp:.1f}°C)",
+                                 line=dict(color=colors[i % len(colors)], width=3),
+                                 marker=dict(size=4)
+                             ))
+                             
+                             # Add peak marker with validation
+                             peak_idx = shell_data[sensor].idxmax()
+                             
+                             # Validate peak_idx is not NaN
+                             if pd.notna(peak_idx) and peak_idx in shell_data.index:
+                                 peak_time = shell_data.loc[peak_idx, 'Time_seconds']
+                                 
+                                 fig.add_trace(go.Scatter(
+                                     x=[peak_time],
+                                     y=[peak_temp],
+                                     mode='markers',
+                                     name=f"{sensor} Peak",
+                                     marker=dict(color=colors[i % len(colors)], size=12, symbol='star'),
+                                     showlegend=False
+                                 ))
+                         
+                        fig.update_layout(
+                            title=f"Shell #{shell_number} Analysis - {selected_position}<br>Duration: {end_time-start_time:.1f}s",
+                            xaxis_title="Time (seconds)",
+                            yaxis_title="Temperature (°C)",
+                            height=500
+                        )
+                        
+                        st.plotly_chart(fig, use_container_width=True)
+                        
+                        # Display metrics
+                        st.subheader("📊 Shell Metrics")
+                        
+                        if peak_temps:
+                            cols = st.columns(len(peak_temps))
+                            
+                            for i, (sensor, peak) in enumerate(peak_temps.items()):
+                                with cols[i]:
+                                    st.metric(f"{sensor} Peak", f"{peak:.1f}°C")
+                            
+                            # Additional metrics
+                            col1, col2, col3 = st.columns(3)
+                            with col1:
+                                st.metric("Duration", f"{end_time-start_time:.1f}s")
+                            with col2:
+                                avg_peak = np.mean(list(peak_temps.values()))
+                                st.metric("Avg Peak Temp", f"{avg_peak:.1f}°C")
+                            with col3:
+                                temp_range = max(peak_temps.values()) - min(peak_temps.values())
+                                st.metric("Temp Range", f"{temp_range:.1f}°C")
+                        else:
+                            st.error("❌ No valid sensor data found for this shell. Please check your data or try a different shell number.")
             
-        elif analysis_type == "Peak Temperature Summary":
+        if True:
             st.subheader("📊 Peak Temperature Summary")
             
             if not selected_position:
@@ -1504,11 +1652,7 @@ if uploaded_files:
                 - 🔍 Shell-by-shell temperature comparison
                 """)
             else:
-                selected_position = st.selectbox(
-                    "Select Position:", 
-                    list(position_data.keys()),
-                    help="Choose which position to analyze for peak temperatures"
-                )
+                # Use position from sidebar
                 df = position_data[selected_position]['data']
                 
                 # Simple shell detection
@@ -1582,7 +1726,7 @@ if uploaded_files:
                             production_rate = (total_shells / total_time) * 60
                             st.metric("Production Rate", f"{production_rate:.1f} pcs/min")
             
-        elif analysis_type == "Multi-Position Composite":
+        if True:
             st.subheader("🏭 Multi-Position Composite Analysis")
             
             if not selected_position:
@@ -1651,7 +1795,8 @@ if uploaded_files:
                 else:
                     st.warning("⚠️ Please upload multiple position files for composite analysis")
 
-        elif analysis_type == "Interactive Plotly View":
+            
+        if True:
             st.subheader("🖼️ Interactive Plotly View")
             
             if not selected_position:
@@ -1666,11 +1811,7 @@ if uploaded_files:
                 - ⏱️ Time-series temperature analysis
                 """)
             else:
-                selected_position = st.selectbox(
-                    "Select Position:", 
-                    list(position_data.keys()),
-                    help="Choose which position to visualize interactively"
-                )
+                # Use position from sidebar
                 df = position_data[selected_position]['data']
                 
                 sensor_columns = [col for col in df.columns if col not in ['Time', 'Time_seconds']]
@@ -1695,7 +1836,8 @@ if uploaded_files:
                 
                 st.plotly_chart(fig, use_container_width=True)
 
-        elif analysis_type == "Full Line Thermal Journey":
+            
+        if True:
             st.subheader("📈 Full Line Thermal Journey")
             st.info("🚀 **Mission 2**: Compare Head sensor temperatures across multiple positions to visualize the complete thermal journey")
             
@@ -1980,7 +2122,8 @@ if uploaded_files:
                 The system will automatically extract position numbers from filenames and compare Head sensor data.
                 """)
 
-        elif analysis_type == "AI Summary & Reports":
+            
+        if True:
             st.subheader("🧠 AI Summary & Reporting Assistant")
             st.info("🚀 **Mission 3**: Generate intelligent thermal analysis reports using AI")
             
@@ -2743,43 +2886,48 @@ Generated on: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}
                     # Download button (only show if report is generated)
                     if 'generated_report' in st.session_state:
                         st.download_button(
-                            label=f"📄 Download Report {output_format}",
+                            label=f"{get_text('download_report')} {output_format}",
                             data=st.session_state['generated_report'],
                             file_name=f"{report_title.lower().replace(' ', '_')}_{report_date.strftime('%Y%m%d')}.txt",
                             mime="text/plain",
-                            help="Download your custom thermal analysis report"
+                            help=get_text("download_help")
                         )
                     else:
-                        st.info("Generate a report first to enable download")
+                        st.info(get_text("generate_first"))
                 
                 # AI Integration Option
-                st.subheader("🤖 AI Enhancement (Optional)")
+                st.subheader(get_text("ai_enhancement"))
                 
                 ai_enhance = st.checkbox(
-                    "🧠 Enhance with AI Analysis",
-                    help="Use AI to generate intelligent insights and recommendations"
+                    get_text("enhance_with_ai"),
+                    help=get_text("ai_help")
                 )
                 
                 if ai_enhance:
-                    st.info("🔑 AI enhancement requires OpenAI API key (configure in AI Analysis tab)")
+                    st.info(get_text("ai_key_required"))
                     ai_sections = st.multiselect(
-                        "Select AI-enhanced sections:",
-                        ["Executive Summary", "Quality Assessment", "Recommendations", "Predictive Insights"],
-                        default=["Recommendations"]
+                        get_text("select_ai_sections"),
+                        [
+                            get_text("executive_summary"), 
+                            get_text("quality_assessment"), 
+                            get_text("recommendations"), 
+                            get_text("predictive_insights")
+                        ],
+                        default=[get_text("recommendations")]
                     )
                     
                     if ai_sections:
-                        st.success(f"✅ AI will enhance: {', '.join(ai_sections)}")
+                        st.success(f"{get_text('ai_will_enhance')} {', '.join(ai_sections)}")
                 
                 else:
-                    st.info("📁 Please upload thermal data files to use the Report Template Generator")
+                    st.info(get_text("upload_to_use"))
 
 
 else:
-    st.info("👆 Upload your toughening data files (.dat format) to begin thermal analysis")
+    st.info(get_text("upload_prompt"))
     
     # Sample data info
-    st.subheader("📋 Expected Data Format")
+    st.subheader(get_text("expected_format"))
     st.code("""
 [Connect DataFile][1.1]
 Date:;04/06/2025
@@ -2793,17 +2941,17 @@ Time;Head;1;2;3;4;
 ...
     """)
     
-    st.markdown("""
-    **📁 File Naming Convention:**
-    - Single position: `cz_position6.dat`
-    - Multiple positions: `cz_position3.dat`, `cz_position6.dat`, `cz_position19.dat`
+    st.markdown(f"""
+    **{get_text("file_naming")}**
+    - {get_text("single_position")} `cz_position6.dat`
+    - {get_text("multiple_positions")} `cz_position3.dat`, `cz_position6.dat`, `cz_position19.dat`
     
-    **🎯 Analysis Capabilities:**
-    - ✅ Automatic plateau detection for glass shells
-    - ✅ Peak temperature extraction
-    - ✅ Production rate calculation (pcs/min)
-    - ✅ Multi-sensor thermal profiling
-    - ✅ Cross-position journey reconstruction
+    **{get_text("analysis_capabilities")}**
+    - {get_text("plateau_detection")}
+    - {get_text("peak_extraction")}
+    - {get_text("production_rate")}
+    - {get_text("thermal_profiling")}
+    - {get_text("journey_reconstruction")}
     """)
 
 # Footer
@@ -2811,7 +2959,7 @@ st.markdown("---")
 st.markdown(
     """
     <div style='text-align: center; color: #666; padding: 20px;'>
-        <p>Built with ❤️ using Streamlit | Glass Toughening Analysis v1.0</p>
+        <p>SEDIVER | Glass Toughening Analysis v1.0</p>
     </div>
     """,
     unsafe_allow_html=True
