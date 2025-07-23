@@ -139,6 +139,10 @@ FR = {
 # Load environment variables
 load_dotenv()
 
+# Initialize language in session state if not already set - MUST BE FIRST
+if 'language' not in st.session_state:
+    st.session_state['language'] = 'EN'
+
 # Page configuration
 st.set_page_config(
     page_title="Glass Toughening Analysis",
@@ -146,10 +150,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-# Initialize language in session state if not already set
-if 'language' not in st.session_state:
-    st.session_state['language'] = 'EN'
 
 # Function to get text based on current language
 def get_text(key):
@@ -1118,7 +1118,7 @@ if uploaded_files:
 
         # Use analysis type and position from sidebar controls
         if True:
-                st.subheader("🌡️ Temperature Curves Over Time")
+            with st.expander("🌡️ Temperature Curves Over Time", expanded=True):
                 
                 if not selected_position:
                     st.info("📁 Please upload data files first to begin temperature curve analysis.")
@@ -1525,7 +1525,7 @@ if uploaded_files:
                             st.write(f"- Figure type: {type(fig)}")
             
         if True:
-                st.subheader("🔍 Individual Glass Shell Analysis")
+            with st.expander("🔍 Individual Glass Shell Analysis", expanded=False):
                 
                 if not selected_position:
                     st.info("📁 Please upload data files first to begin individual shell analysis.")
@@ -1638,22 +1638,22 @@ if uploaded_files:
                             st.error("❌ No valid sensor data found for this shell. Please check your data or try a different shell number.")
             
         if True:
-            st.subheader("📊 Peak Temperature Summary")
-            
-            if not selected_position:
-                st.info("📁 Please upload data files first to begin peak temperature analysis.")
-                st.markdown("""
-                **This analysis will provide:**
-                - 📊 Peak temperature detection for each shell
-                - 📈 Bar chart visualization of peak temperatures
-                - 📋 Comprehensive peak temperature data table
-                - 📈 Overall production statistics
-                - ⏱️ Cycle time and production rate metrics
-                - 🔍 Shell-by-shell temperature comparison
-                """)
-            else:
-                # Use position from sidebar
-                df = position_data[selected_position]['data']
+            with st.expander("📊 Peak Temperature Summary", expanded=False):
+                
+                if not selected_position:
+                    st.info("📁 Please upload data files first to begin peak temperature analysis.")
+                    st.markdown("""
+                    **This analysis will provide:**
+                    - 📊 Peak temperature detection for each shell
+                    - 📈 Bar chart visualization of peak temperatures
+                    - 📋 Comprehensive peak temperature data table
+                    - 📈 Overall production statistics
+                    - ⏱️ Cycle time and production rate metrics
+                    - 🔍 Shell-by-shell temperature comparison
+                    """)
+                else:
+                    # Use position from sidebar
+                    df = position_data[selected_position]['data']
                 
                 # Simple shell detection
                 shell_duration = st.slider("Shell Duration (seconds)", 5.0, 30.0, 15.0)
@@ -1727,43 +1727,107 @@ if uploaded_files:
                             st.metric("Production Rate", f"{production_rate:.1f} pcs/min")
             
         if True:
-            st.subheader("🏭 Multi-Position Composite Analysis")
-            
-            if not selected_position:
-                st.info("📁 Please upload data files first to begin multi-position analysis.")
-                st.markdown("""
-                **This analysis will provide:**
-                - 🏭 Multi-position glass shell journey visualization
-                - 📊 Head sensor temperature comparison across positions
-                - 📈 Composite thermal journey plot
-                - 📋 Position-by-position comparison table
-                - 🔍 Cross-position temperature analysis
-                - ⏱️ Duration and sample count metrics
-                """)
-            else:
-                if len(position_data) > 1:
-                    st.info("📍 Reconstructing glass shell journey across toughening line")
-                    
-                    # Create composite plot
-                    fig = go.Figure()
-                    
-                    colors = px.colors.qualitative.Set3
-                    
-                    for i, (pos_name, pos_info) in enumerate(position_data.items()):
-                        df = pos_info['data']
+            with st.expander("🏭 Multi-Position Composite Analysis", expanded=False):
+                
+                if not selected_position:
+                    st.info("📁 Please upload data files first to begin multi-position analysis.")
+                    st.markdown("""
+                    **This analysis will provide:**
+                    - 🏭 Multi-position glass shell journey visualization
+                    - 📊 Head sensor temperature comparison across positions
+                    - 📈 Composite thermal journey plot
+                    - 📋 Position-by-position comparison table
+                    - 🔍 Cross-position temperature analysis
+                    - ⏱️ Duration and sample count metrics
+                    """)
+                else:
+                    if len(position_data) > 1:
+                        st.info("📍 Reconstructing glass shell journey across toughening line")
                         
-                        # Use Head sensor for composite view
-                        if 'Head' in df.columns:
-                            fig.add_trace(go.Scatter(
-                                x=df['Time_seconds'],
-                                y=df['Head'],
-                                mode='lines',
-                                name=pos_name,
-                                line=dict(color=colors[i % len(colors)], width=2)
-                            ))
+                        # Create composite plot
+                        fig = go.Figure()
+                        
+                        colors = px.colors.qualitative.Set3
+                        
+                        for i, (pos_name, pos_info) in enumerate(position_data.items()):
+                            df = pos_info['data']
+                            
+                            # Use Head sensor for composite view
+                            if 'Head' in df.columns:
+                                fig.add_trace(go.Scatter(
+                                    x=df['Time_seconds'],
+                                    y=df['Head'],
+                                    mode='lines',
+                                    name=pos_name,
+                                    line=dict(color=colors[i % len(colors)], width=2)
+                                ))
+                        
+                        fig.update_layout(
+                            title="Multi-Position Glass Shell Journey (Head Sensor)",
+                            xaxis_title="Time (seconds)",
+                            yaxis_title="Temperature (°C)",
+                            hovermode='x unified',
+                            height=600
+                        )
+                        
+                        st.plotly_chart(fig, use_container_width=True)
+                        
+                        # Position comparison table
+                        st.subheader("📊 Position Comparison")
+                        
+                        comparison_data = []
+                        for pos_name, pos_info in position_data.items():
+                            df = pos_info['data']
+                            if 'Head' in df.columns:
+                                comparison_data.append({
+                                    'Position': pos_name,
+                                    'Max Temp (°C)': df['Head'].max(),
+                                    'Min Temp (°C)': df['Head'].min(),
+                                    'Avg Temp (°C)': df['Head'].mean(),
+                                    'Duration (s)': df['Time_seconds'].max(),
+                                    'Samples': len(df)
+                                })
+                        
+                        if comparison_data:
+                            comparison_df = pd.DataFrame(comparison_data)
+                            st.dataframe(comparison_df, use_container_width=True)
+                    
+                    else:
+                        st.warning("⚠️ Please upload multiple position files for composite analysis")
+
+            
+        if True:
+            with st.expander("🖼️ Interactive Plotly View", expanded=False):
+                
+                if not selected_position:
+                    st.info("📁 Please upload data files first to begin interactive plotting.")
+                    st.markdown("""
+                    **This analysis will provide:**
+                    - 🖼️ Interactive temperature visualization
+                    - 🎛️ Customizable sensor selection
+                    - 📈 Multi-sensor plotting capabilities
+                    - 🔍 Zoom and pan functionality
+                    - 📊 Hover data inspection
+                    - ⏱️ Time-series temperature analysis
+                    """)
+                else:
+                    # Use position from sidebar
+                    df = position_data[selected_position]['data']
+                    
+                    sensor_columns = [col for col in df.columns if col not in ['Time', 'Time_seconds']]
+                    selected_sensors = st.multiselect("Select Sensors:", sensor_columns, default=sensor_columns[:3])
+                    
+                    fig = go.Figure()
+                    for sensor in selected_sensors:
+                        fig.add_trace(go.Scatter(
+                            x=df['Time_seconds'],
+                            y=df[sensor],
+                            mode='lines',
+                            name=sensor
+                        ))
                     
                     fig.update_layout(
-                        title="Multi-Position Glass Shell Journey (Head Sensor)",
+                        title="Interactive Temperature View",
                         xaxis_title="Time (seconds)",
                         yaxis_title="Temperature (°C)",
                         hovermode='x unified',
@@ -1771,79 +1835,15 @@ if uploaded_files:
                     )
                     
                     st.plotly_chart(fig, use_container_width=True)
-                    
-                    # Position comparison table
-                    st.subheader("📊 Position Comparison")
-                    
-                    comparison_data = []
-                    for pos_name, pos_info in position_data.items():
-                        df = pos_info['data']
-                        if 'Head' in df.columns:
-                            comparison_data.append({
-                                'Position': pos_name,
-                                'Max Temp (°C)': df['Head'].max(),
-                                'Min Temp (°C)': df['Head'].min(),
-                                'Avg Temp (°C)': df['Head'].mean(),
-                                'Duration (s)': df['Time_seconds'].max(),
-                                'Samples': len(df)
-                            })
-                    
-                    if comparison_data:
-                        comparison_df = pd.DataFrame(comparison_data)
-                        st.dataframe(comparison_df, use_container_width=True)
-                
-                else:
-                    st.warning("⚠️ Please upload multiple position files for composite analysis")
 
             
         if True:
-            st.subheader("🖼️ Interactive Plotly View")
-            
-            if not selected_position:
-                st.info("📁 Please upload data files first to begin interactive plotting.")
-                st.markdown("""
-                **This analysis will provide:**
-                - 🖼️ Interactive temperature visualization
-                - 🎛️ Customizable sensor selection
-                - 📈 Multi-sensor plotting capabilities
-                - 🔍 Zoom and pan functionality
-                - 📊 Hover data inspection
-                - ⏱️ Time-series temperature analysis
-                """)
-            else:
-                # Use position from sidebar
-                df = position_data[selected_position]['data']
+            with st.expander("📈 Full Line Thermal Journey", expanded=False):
+                st.info("🚀 **Mission 2**: Compare Head sensor temperatures across multiple positions to visualize the complete thermal journey")
                 
-                sensor_columns = [col for col in df.columns if col not in ['Time', 'Time_seconds']]
-                selected_sensors = st.multiselect("Select Sensors:", sensor_columns, default=sensor_columns[:3])
-                
-                fig = go.Figure()
-                for sensor in selected_sensors:
-                    fig.add_trace(go.Scatter(
-                        x=df['Time_seconds'],
-                        y=df[sensor],
-                        mode='lines',
-                        name=sensor
-                    ))
-                
-                fig.update_layout(
-                    title="Interactive Temperature View",
-                    xaxis_title="Time (seconds)",
-                    yaxis_title="Temperature (°C)",
-                    hovermode='x unified',
-                    height=600
-                )
-                
-                st.plotly_chart(fig, use_container_width=True)
-
-            
-        if True:
-            st.subheader("📈 Full Line Thermal Journey")
-            st.info("🚀 **Mission 2**: Compare Head sensor temperatures across multiple positions to visualize the complete thermal journey")
-            
-            # Multi-file upload section
-            st.subheader("📁 Upload Multiple Position Files")
-            journey_files = st.file_uploader(
+                # Multi-file upload section
+                st.subheader("📁 Upload Multiple Position Files")
+                journey_files = st.file_uploader(
                 "Upload multiple .dat files for thermal journey analysis",
                 type=['dat'],
                 accept_multiple_files=True,
@@ -2124,65 +2124,65 @@ if uploaded_files:
 
             
         if True:
-            st.subheader("🧠 AI Summary & Reporting Assistant")
-            st.info("🚀 **Mission 3**: Generate intelligent thermal analysis reports using AI")
-            
-            # Create tabs for different report modes
-            tab1, tab2 = st.tabs(["🤖 AI Analysis", "📋 Report Template Generator"])
-            
-            with tab1:
-                # Original AI Analysis functionality
-                st.subheader("🔑 AI Configuration")
+            with st.expander("🧠 AI Summary & Reporting Assistant", expanded=False):
+                st.info("🚀 **Mission 3**: Generate intelligent thermal analysis reports using AI")
                 
-                # Try to load API key from .env file first
-                env_api_key = os.getenv('OPENAI_API_KEY')
+                # Create tabs for different report modes
+                tab1, tab2 = st.tabs(["🤖 AI Analysis", "📋 Report Template Generator"])
                 
-                if env_api_key:
-                    st.success("✅ OpenAI API key loaded from .env file")
-                    openai_api_key = env_api_key
-                    # Show masked key for confirmation
-                    masked_key = env_api_key[:8] + "..." + env_api_key[-4:] if len(env_api_key) > 12 else "***"
-                    st.info(f"🔑 Using API key: {masked_key}")
-                else:
-                    st.info("💡 No API key found in .env file. Please enter manually or add OPENAI_API_KEY to your .env file")
-                    openai_api_key = st.text_input(
-                        "OpenAI API Key",
-                        type="password",
-                        help="Enter your OpenAI API key to enable AI-powered analysis reports"
-                    )
-                
-                if not openai_api_key:
-                    st.warning("⚠️ Please provide your OpenAI API key to use AI reporting features")
-                    st.markdown("""
-                    **Option 1: Use .env file (Recommended)**
-                    1. Add your API key to the `.env` file: `OPENAI_API_KEY=your_key_here`
-                    2. Restart the app
+                with tab1:
+                    # Original AI Analysis functionality
+                    st.subheader("🔑 AI Configuration")
                     
-                    **Option 2: Manual entry**
-                    1. Visit [OpenAI Platform](https://platform.openai.com/api-keys)
-                    2. Create an account or sign in
-                    3. Generate a new API key
-                    4. Paste it above to enable AI reports
-                    """)
-                    st.stop()
-                
-                # Report type selection
-                st.subheader("📊 Report Type")
-                report_type = st.radio(
-                    "Select report type:",
-                    ["Single Position Analysis", "Multi-Position Journey Report"],
-                    help="Choose between analyzing a single position or comparing multiple positions"
-                )
-            
-            if report_type == "Single Position Analysis":
-                # Single file analysis
-                if position_data:
-                    selected_position = st.selectbox(
-                        "Select Position for AI Analysis:", 
-                        list(position_data.keys()),
-                        help="Choose which position to analyze with AI"
+                    # Try to load API key from .env file first
+                    env_api_key = os.getenv('OPENAI_API_KEY')
+                    
+                    if env_api_key:
+                        st.success("✅ OpenAI API key loaded from .env file")
+                        openai_api_key = env_api_key
+                        # Show masked key for confirmation
+                        masked_key = env_api_key[:8] + "..." + env_api_key[-4:] if len(env_api_key) > 12 else "***"
+                        st.info(f"🔑 Using API key: {masked_key}")
+                    else:
+                        st.info("💡 No API key found in .env file. Please enter manually or add OPENAI_API_KEY to your .env file")
+                        openai_api_key = st.text_input(
+                            "OpenAI API Key",
+                            type="password",
+                            help="Enter your OpenAI API key to enable AI-powered analysis reports"
+                        )
+                    
+                    if not openai_api_key:
+                        st.warning("⚠️ Please provide your OpenAI API key to use AI reporting features")
+                        st.markdown("""
+                        **Option 1: Use .env file (Recommended)**
+                        1. Add your API key to the `.env` file: `OPENAI_API_KEY=your_key_here`
+                        2. Restart the app
+                        
+                        **Option 2: Manual entry**
+                        1. Visit [OpenAI Platform](https://platform.openai.com/api-keys)
+                        2. Create an account or sign in
+                        3. Generate a new API key
+                        4. Paste it above to enable AI reports
+                        """)
+                        st.stop()
+                    
+                    # Report type selection
+                    st.subheader("📊 Report Type")
+                    report_type = st.radio(
+                        "Select report type:",
+                        ["Single Position Analysis", "Multi-Position Journey Report"],
+                        help="Choose between analyzing a single position or comparing multiple positions"
                     )
-                    df = position_data[selected_position]['data']
+                
+                if report_type == "Single Position Analysis":
+                    # Single file analysis
+                    if position_data:
+                        selected_position = st.selectbox(
+                            "Select Position for AI Analysis:", 
+                            list(position_data.keys()),
+                            help="Choose which position to analyze with AI"
+                        )
+                        df = position_data[selected_position]['data']
                     
                     if st.button("🧠 Generate AI Analysis Report", type="primary"):
                         with st.spinner("🤖 AI is analyzing your thermal data..."):
@@ -2508,26 +2508,26 @@ Analysis of {selected_position} reveals {analysis_data['shells_detected']} glass
                                 
                             except Exception as e:
                                 st.error(f"Error generating AI report: {str(e)}")
-                else:
-                    st.info("📁 Please upload a .dat file first to generate single position reports")
-            
-            else:  # Multi-Position Journey Report
-                st.subheader("📁 Upload Multiple Files for Journey Report")
-                journey_files = st.file_uploader(
-                    "Upload multiple .dat files for AI journey analysis",
-                    type=['dat'],
-                    accept_multiple_files=True,
-                    help="Upload files like cz_position6.dat, cz_position12.dat, etc."
-                )
+                    else:
+                        st.info("📁 Please upload a .dat file first to generate single position reports")
                 
-                if journey_files and st.button("🧠 Generate Multi-Position AI Report", type="primary"):
-                    # Cache hygiene - clear stale data on new file upload
-                    st.session_state.pop("detected_shells", None)
+                else:  # Multi-Position Journey Report
+                    st.subheader("📁 Upload Multiple Files for Journey Report")
+                    journey_files = st.file_uploader(
+                        "Upload multiple .dat files for AI journey analysis",
+                        type=['dat'],
+                        accept_multiple_files=True,
+                        help="Upload files like cz_position6.dat, cz_position12.dat, etc."
+                    )
                     
-                    with st.spinner("🤖 AI is analyzing your multi-position thermal journey..."):
-                        # Process files and generate comprehensive report
-                        st.success("🚀 Multi-position AI reporting coming in next update!")
-                        st.info("This feature will analyze thermal consistency across the entire production line and provide strategic recommendations.")
+                    if journey_files and st.button("🧠 Generate Multi-Position AI Report", type="primary"):
+                        # Cache hygiene - clear stale data on new file upload
+                        st.session_state.pop("detected_shells", None)
+                        
+                        with st.spinner("🤖 AI is analyzing your multi-position thermal journey..."):
+                            # Process files and generate comprehensive report
+                            st.success("🚀 Multi-position AI reporting coming in next update!")
+                            st.info("This feature will analyze thermal consistency across the entire production line and provide strategic recommendations.")
             
             with tab2:
                 # Report Template Generator
