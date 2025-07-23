@@ -1,7 +1,7 @@
 # Celcius AI
 
 ## 🔥 Overview
-A specialized thermal analysis application built for SEDIVER R&D team to analyze glass toughening processes. The app provides comprehensive analysis of temperature data from multiple positions with AI-powered reporting capabilities.
+A specialized thermal analysis application built for R&D teams to analyze glass toughening processes. The app provides comprehensive analysis of temperature data from multiple positions with AI-powered reporting capabilities.
 
 ## 🚀 Quick Start
 
@@ -291,7 +291,4 @@ echo "OPENAI_API_KEY=your_key" > .env
 
 ---
 
-**Last Updated**: January 2025  
-**Version**: 1.0  
-**Maintainer**: SEDIVER R&D Team  
-**Contact**: [Your contact information]
+Dev: Rais Thelemuka | rthelemuka@gmail.com
