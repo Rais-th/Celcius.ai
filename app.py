@@ -47,6 +47,44 @@ EN = {
     "thermal_journey": "Full Line Thermal Journey",
     "ai_summary": "AI Summary & Reports",
     
+    # Analysis section headers (expanders)
+    "temp_curves_header": "🌡️ Temperature Curves Over Time",
+    "glass_shell_header": "🔍 Individual Glass Shell Analysis",
+    "peak_temp_header": "📊 Peak Temperature Summary",
+    "multi_position_header": "🏭 Multi-Position Composite Analysis",
+    "interactive_header": "🖼️ Interactive Plotly View",
+    "thermal_journey_header": "📈 Full Line Thermal Journey",
+    "ai_summary_header": "🧠 AI Summary & Reporting Assistant",
+    "report_preview_header": "📄 Report Preview",
+    
+    # Subheaders
+    "loaded_positions": "📁 Loaded Positions",
+    "data_summary": "📊 Data Summary",
+    "plateau_detection_settings": "🔍 Dynamic Plateau Detection Settings",
+    "quality_insights": "📊 Quality Insights",
+    "pdf_export": "📄 PDF Export",
+    "shell_metrics": "📊 Shell Metrics",
+    "peak_temp_data": "📋 Peak Temperature Data",
+    "overall_statistics": "📈 Overall Statistics",
+    "position_comparison": "📊 Position Comparison",
+    "upload_multiple_files": "📁 Upload Multiple Position Files",
+    "head_sensor_journey": "Head Sensor Thermal Journey Comparison",
+    "thermal_journey_insights": "📊 Thermal Journey Insights",
+    "line_performance": "🎯 Line Performance Assessment",
+    "ai_configuration": "🔑 AI Configuration",
+    "report_type": "📊 Report Type",
+    "ai_analysis_report": "📋 AI Analysis Report",
+    "interactive_shell_analysis": "🔍 Interactive Shell Analysis",
+    "download_options": "📥 Download Options",
+    "upload_journey_files": "📁 Upload Multiple Files for Journey Report",
+    "report_template_generator": "📋 Report Template Generator",
+    "report_configuration": "⚙️ Report Configuration",
+    "report_customization": "🎨 Report Customization",
+    "report_sections": "📑 Report Sections",
+    "data_selection": "📊 Data Selection",
+    "live_preview": "👁️ Live Preview",
+    "generate_download": "📥 Generate & Download",
+    
     # Main content
     "upload_prompt": "⬅︎ Upload your toughening data files (.dat format) to begin thermal analysis",
     "expected_format": "📋 Expected Data Format",
@@ -104,6 +142,60 @@ FR = {
     "thermal_journey": "Parcours Thermique Complet",
     "ai_summary": "Résumé IA & Rapports",
     
+    # Analysis section headers (expanders)
+    "temp_curves_header": "🌡️ Courbes de Température dans le Temps",
+    "glass_shell_header": "🔍 Analyse Individuelle de Coquille en Verre",
+    "peak_temp_header": "📊 Résumé des Températures Maximales",
+    "multi_position_header": "🏭 Analyse Composite Multi-Positions",
+    "interactive_header": "🖼️ Vue Interactive Plotly",
+    "thermal_journey_header": "📈 Parcours Thermique Complet de la Ligne",
+    "ai_summary_header": "🧠 Assistant de Résumé et Rapports IA",
+    "report_preview_header": "📄 Aperçu du Rapport",
+    
+    # Subheaders
+    "loaded_positions": "📁 Positions Chargées",
+    "data_summary": "📊 Résumé des Données",
+    "plateau_detection_settings": "🔍 Paramètres de Détection Dynamique des Plateaux",
+    "quality_insights": "📊 Aperçus Qualité",
+    "pdf_export": "📄 Export PDF",
+    "shell_metrics": "📊 Métriques des Coquilles",
+    "peak_temp_data": "📋 Données de Température Maximale",
+    "overall_statistics": "📈 Statistiques Générales",
+    "position_comparison": "📊 Comparaison des Positions",
+    
+    # Shell analysis metrics
+    "duration": "Durée",
+    "avg_peak_temp": "Temp Pic Moy",
+    "temp_range": "Plage Temp",
+    "head_max": "Max Tête",
+    "avg_temperature": "Temp Moyenne",
+    "temperature_stability": "Stabilité Temp",
+    "shell_quality": "Qualité Coquille",
+    "total_shells": "Total Coquilles",
+    "avg_cycle_time": "Temps Cycle Moy",
+    "production_rate": "Taux Production",
+    "total_shells_detected": "Total Coquilles Détectées",
+    "avg_shell_duration": "Durée Coquille Moy",
+    "total_samples": "Total Échantillons",
+    "sensors": "Capteurs",
+    "upload_multiple_files": "📁 Télécharger Plusieurs Fichiers de Position",
+    "head_sensor_journey": "Comparaison du Parcours Thermique du Capteur de Tête",
+    "thermal_journey_insights": "📊 Aperçus du Parcours Thermique",
+    "line_performance": "🎯 Évaluation des Performances de la Ligne",
+    "ai_configuration": "🔑 Configuration IA",
+    "report_type": "📊 Type de Rapport",
+    "ai_analysis_report": "📋 Rapport d'Analyse IA",
+    "interactive_shell_analysis": "🔍 Analyse Interactive des Coquilles",
+    "download_options": "📥 Options de Téléchargement",
+    "upload_journey_files": "📁 Télécharger Plusieurs Fichiers pour Rapport de Parcours",
+    "report_template_generator": "📋 Générateur de Modèles de Rapport",
+    "report_configuration": "⚙️ Configuration du Rapport",
+    "report_customization": "🎨 Personnalisation du Rapport",
+    "report_sections": "📑 Sections du Rapport",
+    "data_selection": "📊 Sélection des Données",
+    "live_preview": "👁️ Aperçu en Direct",
+    "generate_download": "📥 Générer et Télécharger",
+    
     # Main content
     "upload_prompt": "⬅︎    Placez ici votre/vos fichiers en format (.dat) pour commencer l'analyse thermique",
     "expected_format": "📋 Format de Données Attendu",
@@ -133,7 +225,101 @@ FR = {
     "executive_summary": "Résumé Exécutif",
     "quality_assessment": "Évaluation de la Qualité",
     "recommendations": "Recommandations",
-    "predictive_insights": "Perspectives Prédictives"
+    "predictive_insights": "Perspectives Prédictives",
+    
+    # UI Messages and Status Texts
+    "using_sheet": "📋 Utilisation de la feuille: '{sheet}' pour l'analyse",
+    "error_reading_header": "⚠️ Erreur de lecture avec header=0, essai avec header=None: {error}",
+    "time_column_identified": "⏰ Colonne de temps identifiée: '{column}'",
+    "no_time_column": "⚠️ Aucune colonne de temps trouvée, création d'un temps séquentiel",
+    "could_not_process_column": "⚠️ Impossible de traiter la colonne '{column}': {error}",
+    "identified_sensors": "🌡️ Identifié {count} capteurs de température: {sensors}",
+    "no_valid_columns": "❌ Aucune colonne de données numériques valides trouvée dans cette feuille!",
+    "time_parsing_failed": "⚠️ Échec de l'analyse du temps ({error}), utilisation du timing séquentiel de secours",
+    "error_processing_file": "Erreur lors du traitement de {filename}: {error}",
+    "plateaus_found": "✅ **Trouvé {count} plateau(x)** qui répondent aux critères!",
+    "no_sensor_data": "❌ Aucune donnée de capteur valide trouvée pour cette coquille. Veuillez vérifier vos données ou essayer un autre numéro de coquille.",
+    "upload_multiple_files": "⚠️ Veuillez télécharger plusieurs fichiers de position pour l'analyse composite",
+    "could_not_decode": "Impossible de décoder {filename}",
+    "no_data_section": "Impossible de trouver la section de données dans {filename}",
+    "no_data_found": "Aucune donnée trouvée dans {filename}",
+    "no_valid_rows": "Aucune ligne de données valide dans {filename}",
+    "excellent_consistency": "🎯 **Excellente Cohérence de Ligne**: La variation de température entre les positions est minimale",
+    "moderate_variation": "⚠️ **Variation Modérée**: Certaines positions montrent des différences de température",
+    "high_variation": "🚨 **Variation Élevée**: Différences de température significatives détectées entre les positions",
+    "no_head_sensor": "⚠️ Aucune donnée de capteur de tête trouvée dans les fichiers téléchargés",
+    "no_valid_data_extracted": "❌ Aucune donnée valide n'a pu être extraite des fichiers téléchargés",
+    "provide_api_key": "⚠️ Veuillez fournir votre clé API OpenAI pour utiliser les fonctionnalités de rapport IA",
+    "error_generating_report": "Erreur lors de la génération du rapport IA: {error}",
+    "report_generated": "✅ Rapport généré avec succès!",
+    "select_position_data": "⚠️ Veuillez sélectionner les données de position et vous assurer que tous les champs requis sont remplis",
+    
+    # UI Labels and Help Text
+    "select_sheet": "📋 Sélectionner la feuille pour {filename}:",
+    "choose_excel_sheet": "Choisissez quelle feuille Excel analyser",
+    "column_info": "**Informations sur les Colonnes:**",
+    "data_preview": "🔍 Aperçu des Données - {filename} ({sheet})",
+    "auto_selected": "📍 Sélection automatique: {position}",
+    "choose_shell": "Choisissez quelle coquille analyser en détail",
+    "no_data_caption": "⚠️ Aucune donnée: {sensor}",
+    "choose_position_ai": "Choisissez quelle position analyser avec l'IA",
+    "click_shell_info": "Cliquez sur une coquille ci-dessous pour voir le profil thermique détaillé de cette région spécifique",
+    "choose_shell_detail": "Choisissez une coquille spécifique à analyser en détail",
+    "choose_report_scope": "Choisissez la portée de votre rapport d'analyse thermique",
+    "choose_position_report": "Choisissez quelle position inclure dans le rapport",
+    "data_preview_template": "**Aperçu des Données pour {position}:**",
+    
+    # File Upload Messages
+    "upload_data_first_curves": "📁 Veuillez d'abord télécharger des fichiers de données pour commencer l'analyse des courbes de température.",
+    "upload_data_first_shell": "📁 Veuillez d'abord télécharger des fichiers de données pour commencer l'analyse individuelle des coquilles.",
+    "upload_data_first_peak": "📁 Veuillez d'abord télécharger des fichiers de données pour commencer l'analyse des températures maximales.",
+    "upload_data_first_multi": "📁 Veuillez d'abord télécharger des fichiers de données pour commencer l'analyse multi-position.",
+    "upload_data_first_interactive": "📁 Veuillez d'abord télécharger des fichiers de données pour commencer le tracé interactif.",
+    "upload_dat_file": "📁 Veuillez d'abord télécharger un fichier .dat pour générer des rapports de position unique",
+    
+    # Processing Messages
+    "processing_xlsx": "📊 Traitement du fichier XLSX: {filename}",
+    "detected_sequential": "🕐 Données séquentielles détectées dans '{column}', traitement comme colonne de temps",
+    "additional_numeric": "📊 Colonnes numériques supplémentaires: {columns}",
+    "reconstructing_journey": "📍 Reconstruction du parcours de la coquille en verre à travers la ligne de trempe",
+    
+    # Interactive shell analysis
+    "click_shell_info": "Cliquez sur une coquille ci-dessous pour voir le profil thermique détaillé de cette région spécifique",
+    "select_shell_analysis": "Sélectionner une coquille pour analyse détaillée:",
+    "choose_shell_detail": "Choisissez une coquille spécifique à analyser en détail",
+    "shell_start": "Début Coquille",
+    "shell_end": "Fin Coquille",
+    
+    # Report template generator
+    "generate_professional_reports": "🎯 Générez des rapports d'analyse thermique professionnels sans écrire de prompts",
+    "report_type": "📊 Type de Rapport",
+    "output_format": "📄 Format de Sortie",
+    "report_title_input": "📝 Titre du Rapport",
+    "analyst_name_input": "👤 Nom de l'Analyste",
+    "report_date_input": "📅 Date du Rapport",
+    "company_department": "🏢 Entreprise/Département",
+    "toggle_sections": "Activez/désactivez les sections que vous voulez inclure dans votre rapport:",
+    "executive_summary_checkbox": "📋 Résumé Exécutif",
+    "shell_detection_table": "🔍 Tableau de Détection des Coquilles",
+    "temperature_profile": "🌡️ Profil de Température",
+    "quality_alerts_checkbox": "⚠️ Alertes Qualité",
+    "recommendations_checkbox": "💡 Recommandations",
+    "charts_graphs": "📊 Graphiques et Diagrammes",
+    
+    # Report type options
+    "single_position": "Position Unique",
+    "full_line_journey": "Parcours Ligne Complète",
+    "anomaly_summary_only": "Résumé d'Anomalies Seulement",
+    "choose_report_scope": "Choisissez la portée de votre rapport d'analyse thermique",
+    "select_download_format": "Sélectionnez le format de téléchargement pour votre rapport",
+    "enter_custom_title": "Entrez un titre personnalisé pour votre rapport",
+    "enter_analyst_name": "Entrez le nom de l'analyste",
+    "select_report_date": "Sélectionnez la date de génération du rapport",
+    "enter_company_dept": "Entrez le nom de l'entreprise ou du département",
+    
+    # Download buttons
+    "download_as_txt": "📄 Télécharger en TXT",
+    "download_data_csv": "📊 Télécharger Données (CSV)"
 }
 
 # Load environment variables
@@ -658,7 +844,7 @@ st.markdown(f'<h1 class="main-header">{get_text("app_title")}</h1>', unsafe_allo
 # Language selector in sidebar
 def change_language():
     # Update all text when language changes
-    st.experimental_rerun()
+    st.rerun()
 
 # Sidebar - Apple-style Control Panel
 st.sidebar.markdown(f"""
@@ -733,7 +919,7 @@ if uploaded_files:
             # Handle different file formats
             if filename.endswith('.xlsx'):
                 # XLSX Multi-sheet processing
-                st.info(f"📊 Processing XLSX file: {filename}")
+                st.info(get_text("processing_xlsx").format(filename=filename))
                 
                 # Read all sheets
                 excel_file = pd.ExcelFile(uploaded_file)
@@ -768,13 +954,13 @@ if uploaded_files:
                     )
                     main_sheet = selected_sheet
                 
-                st.success(f"📋 Using sheet: '{main_sheet}' for analysis")
+                st.success(get_text("using_sheet").format(sheet=main_sheet))
                 
                 # Read the selected sheet with enhanced error handling
                 try:
                     df = pd.read_excel(uploaded_file, sheet_name=main_sheet, header=0)
                 except Exception as e:
-                    st.warning(f"⚠️ Error reading with header=0, trying header=None: {e}")
+                    st.warning(get_text("error_reading_header").format(error=e))
                     df = pd.read_excel(uploaded_file, sheet_name=main_sheet, header=None)
                     # Use first row as column names if it looks like headers
                     if df.iloc[0].dtype == 'object':
@@ -834,12 +1020,12 @@ if uploaded_files:
                             diff = first_col_data.diff().dropna()
                             if diff.std() < diff.mean() * 0.1:  # Low variance in differences
                                 time_col = first_col
-                                st.info(f"🕐 Detected sequential data in '{first_col}', treating as time column")
+                                st.info(get_text("detected_sequential").format(column=first_col))
                     except:
                         pass
                 
                 if time_col:
-                    st.success(f"⏰ Time column identified: '{time_col}'")
+                    st.success(get_text("time_column_identified").format(column=time_col))
                     # Convert time to seconds if needed
                     if df[time_col].dtype == 'object':
                         try:
@@ -854,7 +1040,7 @@ if uploaded_files:
                     # Rename original time column for consistency
                     df = df.rename(columns={time_col: 'Time'})
                 else:
-                    st.warning("⚠️ No time column found, creating sequential time")
+                    st.warning(get_text("no_time_column"))
                     df['Time_seconds'] = df.index * 0.1
                     df['Time'] = df['Time_seconds']
                 
@@ -909,7 +1095,7 @@ if uploaded_files:
                         except Exception as e:
                             # Restore original column if processing fails
                             df[col] = original_col
-                            st.warning(f"⚠️ Could not process column '{col}': {e}")
+                            st.warning(get_text("could_not_process_column").format(column=col, error=e))
                 
                 # Keep only relevant columns
                 final_columns = ['Time', 'Time_seconds'] + numeric_columns
@@ -917,15 +1103,15 @@ if uploaded_files:
                 
                 # Report findings
                 if temperature_columns:
-                    st.success(f"🌡️ Identified {len(temperature_columns)} temperature sensors: {temperature_columns}")
+                    st.success(get_text("identified_sensors").format(count=len(temperature_columns), sensors=temperature_columns))
                 if numeric_columns and not temperature_columns:
                     st.info(f"📊 Processed {len(numeric_columns)} numeric columns: {numeric_columns}")
                 elif len(numeric_columns) > len(temperature_columns):
                     other_numeric = [col for col in numeric_columns if col not in temperature_columns]
-                    st.info(f"📊 Additional numeric columns: {other_numeric}")
+                    st.info(get_text("additional_numeric").format(columns=other_numeric))
                 
                 if not numeric_columns:
-                    st.error("❌ No valid numeric data columns found in this sheet!")
+                    st.error(get_text("no_valid_columns"))
                     continue
                 
                 # Extract position from filename for XLSX
@@ -1036,7 +1222,7 @@ if uploaded_files:
                                 
                         except Exception as e:
                             # Fallback: create sequential time based on row index and resolution
-                            st.warning(f"⚠️ Time parsing failed ({str(e)}), using fallback sequential timing")
+                            st.warning(get_text("time_parsing_failed").format(error=str(e)))
                             resolution = float(header_info.get('Resolution', '0.05').replace(',', '.'))
                             df['Time_seconds'] = df.index * resolution
                 else:
@@ -1057,13 +1243,10 @@ if uploaded_files:
                 }
                 
         except Exception as e:
-            st.error(f"Error processing {uploaded_file.name}: {str(e)}")
+            st.error(get_text("error_processing_file").format(filename=uploaded_file.name, error=str(e)))
     
     if position_data:
-        st.success(f"✅ Successfully loaded {len(position_data)} position file(s)")
-        
         # Display loaded positions
-        st.subheader("📁 Loaded Positions")
         cols = st.columns(min(len(position_data), 4))
         for i, (pos_name, pos_info) in enumerate(position_data.items()):
             with cols[i % 4]:
@@ -1118,10 +1301,10 @@ if uploaded_files:
 
         # Use analysis type and position from sidebar controls
         if True:
-            with st.expander("🌡️ Temperature Curves Over Time", expanded=True):
+            with st.expander(get_text("temp_curves_header"), expanded=True):
                 
                 if not selected_position:
-                    st.info("📁 Please upload data files first to begin temperature curve analysis.")
+                    st.info(get_text("upload_data_first_curves"))
                     st.markdown("""
                     **This analysis will provide:**
                     - 📊 Comprehensive data summary with sample count, duration, and temperature ranges
@@ -1135,28 +1318,14 @@ if uploaded_files:
                     # Use position from sidebar
                     df = position_data[selected_position]['data']
                     
-                    # Show data summary
-                    st.subheader("📊 Data Summary")
-                    col1, col2, col3, col4 = st.columns(4)
-                    with col1:
-                        st.metric("Total Samples", f"{len(df):,}")
-                    with col2:
-                        st.metric("Duration", f"{df['Time_seconds'].max():.1f}s")
-                    with col3:
-                        sensor_cols = [col for col in df.columns if col not in ['Time', 'Time_seconds']]
-                        st.metric("Sensors", len(sensor_cols))
-                    with col4:
-                        temp_range = df[sensor_cols].max().max() - df[sensor_cols].min().min()
-                        st.metric("Temp Range", f"{temp_range:.1f}°C")
-                    
                     # Detect stable regions and transitions
-                    st.subheader("🔍 Dynamic Plateau Detection Settings")
+                    st.subheader(get_text("plateau_detection_settings"))
                     col1, col2, col3 = st.columns(3)
                     
                     with col1:
-                        flat_th = st.slider("Flatness (°C)", 2, 10, 5)
+                        flat_th = st.slider("Planéité (°C)", 2, 10, 5)
                     with col2:
-                        min_dur = st.slider("Min plateau (s)", 1, 20, 2)
+                        min_dur = st.slider("Plateau min (s)", 1, 20, 2)
                     with col3:
                         # Create sensor options with Head as default
                         sensor_options = []
@@ -1177,10 +1346,10 @@ if uploaded_files:
                             sensor_options.append('Average')
                         
                         sensor_for_detection = st.selectbox(
-                            "Sensor for Detection:", 
+                            "Capteur:", 
                             sensor_options, 
                             index=0,
-                            help="Select which sensor to use for plateau detection"
+                            help="Sélectionnez le capteur à utiliser pour la détection des plateaux"
                         )
                 
                 # Calculate data resolution
@@ -1251,18 +1420,18 @@ if uploaded_files:
                 plateaus, roll_std, stable_mask = detect_plateaus_rolling_std(df, sensor_data, flat_th, min_dur, df_res)
                 
                 # Show detection info
-                st.info(f"🔍 **Detection Status**: Using sensor '{sensor_for_detection}' with flatness threshold {flat_th}°C (rolling std) and minimum duration {min_dur}s")
+                st.caption(f"🔍 Capteur: {sensor_for_detection} | Planéité: {flat_th}°C | Durée min: {min_dur}s")
                 
                 if plateaus:
-                    st.success(f"✅ **Found {len(plateaus)} plateau(s)** that meet the criteria!")
+                    st.success(f"✅ **Trouvé {len(plateaus)} plateau(x)** qui répondent aux critères!")
                     
                     # Show additional rolling std info
                     avg_std = roll_std.mean()
                     max_std = roll_std.max()
                     stable_percentage = (stable_mask.sum() / len(stable_mask)) * 100
-                    st.info(f"📊 **Rolling Std Analysis**: Avg σ = {avg_std:.2f}°C, Max σ = {max_std:.2f}°C, Stable regions = {stable_percentage:.1f}%")
+                    st.info(f"📊 **Analyse d'Écart-Type Mobile**: Moy σ = {avg_std:.2f}°C, Max σ = {max_std:.2f}°C, Régions stables = {stable_percentage:.1f}%")
                 else:
-                    st.warning("⚠️ **No plateau found with current thresholds. Try adjusting flatness or minimum duration.**")
+                    st.caption("⚠️ Aucun plateau trouvé - essayez d'ajuster les seuils")
                 
                 # Create temperature curve plot with rolling std
                 fig = go.Figure()
@@ -1294,7 +1463,7 @@ if uploaded_files:
                 
                 # Add flatness threshold line
                 fig.add_hline(y=flat_th, line_dash="dash", line_color="purple", 
-                             annotation_text=f"Flatness Threshold ({flat_th}°C)",
+                             annotation_text=f"Seuil de Planéité ({flat_th}°C)",
                              yref='y2')
                 
                 # Add plateau markers
@@ -1318,14 +1487,14 @@ if uploaded_files:
                 
                 # Update layout with dual y-axes
                 fig.update_layout(
-                    title=f"Temperature Curves with Rolling Std Analysis - {selected_position}",
-                    xaxis_title="Time (seconds)",
+                    title=f"Courbes de Température avec Analyse d'Écart-Type Mobile - {selected_position}",
+                    xaxis_title="Temps (secondes)",
                     yaxis=dict(
-                        title="Temperature (°C)",
+                        title="Température (°C)",
                         side="left"
                     ),
                     yaxis2=dict(
-                        title="Rolling Std (°C)",
+                        title="Écart-Type Mobile (°C)",
                         side="right",
                         overlaying="y",
                         range=[0, max(roll_std.max() * 1.2, flat_th * 1.5)]
@@ -1338,7 +1507,7 @@ if uploaded_files:
                 
                 # Display detected plateaus with comprehensive metrics
                 if plateaus:
-                    st.subheader(f"🎯 Detected Glass Shells: {len(plateaus)}")
+                    st.subheader(f"🎯 Coques de Verre Détectées: {len(plateaus)}")
                     
                     # Create comprehensive shell summary
                     shell_summary_data = []
@@ -1390,19 +1559,19 @@ if uploaded_files:
                     # Production metrics
                     col1, col2, col3 = st.columns(3)
                     with col1:
-                        st.metric("Total Shells Detected", len(plateaus))
+                        st.metric("Total Coquilles Détectées", len(plateaus))
                     with col2:
                         if len(plateaus) > 1:
                             total_time = df['Time_seconds'].iloc[plateaus[-1]['end']] - df['Time_seconds'].iloc[plateaus[0]['start']]
                             pcs_per_min = (len(plateaus) / total_time) * 60
-                            st.metric("Production Rate", f"{pcs_per_min:.1f} pcs/min")
+                            st.metric("Taux Production", f"{pcs_per_min:.1f} pcs/min")
                     with col3:
                         if len(plateaus) > 0:
                             avg_duration = np.mean([p['duration'] for p in plateaus])
-                            st.metric("Avg Shell Duration", f"{avg_duration:.1f}s")
+                            st.metric("Durée Coquille Moy", f"{avg_duration:.1f}s")
                     
                     # Quality insights
-                    st.subheader("📊 Quality Insights")
+                    st.subheader(get_text("quality_insights"))
                     if len(shell_summary_data) > 0:
                         # Temperature consistency analysis
                         for sensor in sensor_columns:
@@ -1424,111 +1593,96 @@ if uploaded_files:
                                 
                                 st.markdown(f"**{sensor} Temperature Consistency**: :{color}[{consistency}] (σ = {temp_std:.1f}°C)")
                 else:
-                    st.info("🔧 **Tip**: Try adjusting the detection threshold or minimum duration to capture glass shells in your data.")
+                    st.caption("🔧 Astuce: Ajustez les seuils pour capturer les coques de verre")
                 
-                # PDF Export Section (Always Available)
-                st.subheader("📄 PDF Export")
-                
-                # PDF Configuration
-                col1, col2 = st.columns(2)
-                with col1:
-                    report_title = st.text_input("Report Title", value=f"Thermal Analysis - {selected_position}")
-                    analyst_name = st.text_input("Analyst Name", value="Sediver Analyst")
-                
-                with col2:
-                    pdf_type = st.selectbox(
-                        "PDF Type", 
-                        ["Full PDF", "Short PDF (2 pages)"],
-                        help="Choose between full detailed report or short summary"
-                    )
-                    add_watermark = st.checkbox("Add 'Internal Use Only' watermark", value=False)
-                
-                # Section toggles
-                st.write("**Include Sections:**")
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    include_executive = st.checkbox("Executive Summary", value=True)
-                    include_shell_table = st.checkbox("Shell Detection Table", value=True)
-                with col2:
-                    include_charts = st.checkbox("Temperature Charts", value=True)
-                    include_alerts = st.checkbox("Quality Alerts", value=True)
-                with col3:
-                    include_recommendations = st.checkbox("Recommendations", value=True)
-                
-                # Generate PDF button
-                if st.button("📄 Generate PDF Report", type="primary"):
-                    with st.spinner("🔄 Generating PDF report..."):
-                        try:
-                            # Prepare section configuration
-                            include_sections = {
-                                'executive_summary': include_executive,
-                                'shell_detection': include_shell_table,
-                                'temperature_charts': include_charts,
-                                'quality_alerts': include_alerts,
-                                'recommendations': include_recommendations
-                            }
-                            
-                            # Adjust for short PDF
-                            if pdf_type == "Short PDF (2 pages)":
-                                include_sections = {
-                                    'executive_summary': True,
-                                    'shell_detection': True,
-                                    'temperature_charts': False,
-                                    'quality_alerts': False,
-                                    'recommendations': False
-                                }
-                            
-                            # Convert plateaus to the format expected by PDF generator
-                            pdf_plateaus = []
-                            if plateaus:  # Only process if plateaus exist
-                                for plateau in plateaus:
-                                    start_time = df['Time_seconds'].iloc[plateau['start']]
-                                    end_time = df['Time_seconds'].iloc[plateau['end']]
-                                    pdf_plateaus.append({
-                                        'start_time': start_time,
-                                        'end_time': end_time,
-                                        'duration': plateau['duration']
-                                    })
-                            
-                            # Generate PDF (works even with no plateaus)
-                            pdf_bytes = generate_pdf_report(
-                                plateaus=pdf_plateaus,
-                                df=df,
-                                fig=fig,
-                                report_title=report_title,
-                                analyst_name=analyst_name,
-                                include_sections=include_sections,
-                                pdf_type=pdf_type.lower(),
-                                add_watermark=add_watermark
-                            )
-                            
-                            # Get current date for filename
-                            today = datetime.now().strftime("%Y-%m-%d")
-                            filename = f"{report_title.replace(' ', '_')}_{today}.pdf"
-                            
-                            # Download button
-                            st.download_button(
-                                label="📥 Download PDF Report",
-                                data=pdf_bytes,
-                                file_name=filename,
-                                mime="application/pdf",
-                                help="Download the generated PDF report"
-                            )
-                            
-                            st.success(f"✅ PDF report generated successfully! ({len(pdf_bytes)} bytes)")
-                            
-                        except Exception as e:
-                            st.error(f"❌ PDF generation failed: {str(e)}")
-                            st.write("**Debug info:**")
-                            st.write(f"- Plateaus count: {len(plateaus) if plateaus else 0}")
-                            st.write(f"- DataFrame shape: {df.shape}")
-                            st.write(f"- Figure type: {type(fig)}")
+                # # PDF Export Section (Always Available)
+                # st.subheader(get_text("pdf_export"))
+                # 
+                # # PDF Configuration
+                # col1, col2 = st.columns(2)
+                # with col1:
+                #     report_title = st.text_input("Report Title", value=f"Thermal Analysis - {selected_position}")
+                #     analyst_name = st.text_input("Analyst Name", value="Sediver Analyst")
+                # 
+                # with col2:
+                #     add_watermark = st.checkbox("Add 'Internal Use Only' watermark", value=False)
+                # 
+                # # Section toggles
+                # st.write("**Include Sections:**")
+                # col1, col2, col3 = st.columns(3)
+                # with col1:
+                #     include_executive = st.checkbox("Executive Summary", value=True)
+                #     include_shell_table = st.checkbox("Shell Detection Table", value=True)
+                # with col2:
+                #     include_charts = st.checkbox("Temperature Charts", value=True)
+                #     include_alerts = st.checkbox("Quality Alerts", value=True)
+                # with col3:
+                #     include_recommendations = st.checkbox("Recommendations", value=True)
+                # 
+                # # Generate PDF button
+                # if st.button("📄 Generate PDF Report", type="primary"):
+                #     with st.spinner("🔄 Generating PDF report..."):
+                #         try:
+                #             # Prepare section configuration (Full PDF by default)
+                #             include_sections = {
+                #                 'executive_summary': include_executive,
+                #                 'shell_detection': include_shell_table,
+                #                 'temperature_charts': include_charts,
+                #                 'quality_alerts': include_alerts,
+                #                 'recommendations': include_recommendations
+                #             }
+                #             
+                #             # Convert plateaus to the format expected by PDF generator
+                #             pdf_plateaus = []
+                #             if plateaus:  # Only process if plateaus exist
+                #                 for plateau in plateaus:
+                #                     start_time = df['Time_seconds'].iloc[plateau['start']]
+                #                     end_time = df['Time_seconds'].iloc[plateau['end']]
+                #                     pdf_plateaus.append({
+                #                         'start_time': start_time,
+                #                         'end_time': end_time,
+                #                         'duration': plateau['duration']
+                #                     })
+                #             
+                #             # Generate PDF (works even with no plateaus)
+                #             pdf_bytes = generate_pdf_report(
+                #                 plateaus=pdf_plateaus,
+                #                 df=df,
+                #                 fig=fig,
+                #                 report_title=report_title,
+                #                 analyst_name=analyst_name,
+                #                 include_sections=include_sections,
+                #                 pdf_type="full pdf",
+                #                 add_watermark=add_watermark
+                #             )
+                #             
+                #             # Get current date for filename
+                #             today = datetime.now().strftime("%Y-%m-%d")
+                #             filename = f"{report_title.replace(' ', '_')}_{today}.pdf"
+                #             
+                #             # Download button
+                #             st.download_button(
+                #                 label="📥 Download PDF Report",
+                #                 data=pdf_bytes,
+                #                 file_name=filename,
+                #                 mime="application/pdf",
+                #                 help="Download the generated PDF report"
+                #             )
+                #             
+                #             st.success(f"✅ PDF report generated successfully! ({len(pdf_bytes)} bytes)")
+                #             
+                #         except Exception as e:
+                #             st.error(f"❌ PDF generation failed: {str(e)}")
+                #             st.write("**Debug info:**")
+                #             st.write(f"- Plateaus count: {len(plateaus) if plateaus else 0}")
+                #             st.write(f"- DataFrame shape: {df.shape}")
+                #             st.write(f"- Figure type: {type(fig)}")
             
         if True:
-            with st.expander("🔍 Individual Glass Shell Analysis", expanded=False):
+            with st.expander(get_text("glass_shell_header"), expanded=False):
                 
                 if not selected_position:
-                    st.info("📁 Please upload data files first to begin individual shell analysis.")
+                    st.info(get_text("upload_data_first_shell"))
                     st.markdown("""
                     **This analysis will provide:**
                     - 🎯 Individual glass shell isolation and analysis
@@ -1574,7 +1728,7 @@ if uploaded_files:
                              
                              if len(sensor_data) == 0:
                                  # Skip sensors with no valid data
-                                 st.warning(f"⚠️ No valid data for sensor {sensor} in this shell")
+                                 st.caption(get_text("no_data_caption").format(sensor=sensor))
                                  continue
                              
                              peak_temp = sensor_data.max()
@@ -1606,16 +1760,16 @@ if uploaded_files:
                                  ))
                          
                         fig.update_layout(
-                            title=f"Shell #{shell_number} Analysis - {selected_position}<br>Duration: {end_time-start_time:.1f}s",
-                            xaxis_title="Time (seconds)",
-                            yaxis_title="Temperature (°C)",
+                            title=f"Analyse Coquille #{shell_number} - {selected_position}<br>Durée: {end_time-start_time:.1f}s",
+                            xaxis_title="Temps (secondes)",
+                            yaxis_title="Température (°C)",
                             height=500
                         )
                         
                         st.plotly_chart(fig, use_container_width=True)
                         
                         # Display metrics
-                        st.subheader("📊 Shell Metrics")
+                        st.subheader(get_text("shell_metrics"))
                         
                         if peak_temps:
                             cols = st.columns(len(peak_temps))
@@ -1627,21 +1781,21 @@ if uploaded_files:
                             # Additional metrics
                             col1, col2, col3 = st.columns(3)
                             with col1:
-                                st.metric("Duration", f"{end_time-start_time:.1f}s")
+                                st.metric("Durée", f"{end_time-start_time:.1f}s")
                             with col2:
                                 avg_peak = np.mean(list(peak_temps.values()))
-                                st.metric("Avg Peak Temp", f"{avg_peak:.1f}°C")
+                                st.metric("Temp Pic Moy", f"{avg_peak:.1f}°C")
                             with col3:
                                 temp_range = max(peak_temps.values()) - min(peak_temps.values())
-                                st.metric("Temp Range", f"{temp_range:.1f}°C")
+                                st.metric("Plage Temp", f"{temp_range:.1f}°C")
                         else:
-                            st.error("❌ No valid sensor data found for this shell. Please check your data or try a different shell number.")
+                            st.error(get_text("no_sensor_data"))
             
         if True:
-            with st.expander("📊 Peak Temperature Summary", expanded=False):
+            with st.expander(get_text("peak_temp_header"), expanded=False):
                 
                 if not selected_position:
-                    st.info("📁 Please upload data files first to begin peak temperature analysis.")
+                    st.info(get_text("upload_data_first_peak"))
                     st.markdown("""
                     **This analysis will provide:**
                     - 📊 Peak temperature detection for each shell
@@ -1695,9 +1849,9 @@ if uploaded_files:
                             ))
                     
                     fig.update_layout(
-                        title=f"Peak Temperatures by Shell - {selected_position}",
-                        xaxis_title="Shell Number",
-                        yaxis_title="Peak Temperature (°C)",
+                        title=f"Températures Maximales par Coquille - {selected_position}",
+                        xaxis_title="Numéro de Coquille",
+                        yaxis_title="Température Maximale (°C)",
                         barmode='group',
                         height=500
                     )
@@ -1705,32 +1859,32 @@ if uploaded_files:
                     st.plotly_chart(fig, use_container_width=True)
                     
                     # Display summary table
-                    st.subheader("📋 Peak Temperature Data")
+                    st.subheader(get_text("peak_temp_data"))
                     st.dataframe(peaks_df, use_container_width=True)
                     
                     # Overall statistics
-                    st.subheader("📈 Overall Statistics")
+                    st.subheader(get_text("overall_statistics"))
                     col1, col2, col3 = st.columns(3)
                     
                     with col1:
                         total_shells = len(peaks_df)
-                        st.metric("Total Shells", total_shells)
+                        st.metric("Total Coquilles", total_shells)
                     
                     with col2:
                         if total_shells > 0:
                             avg_cycle_time = total_time / total_shells
-                            st.metric("Avg Cycle Time", f"{avg_cycle_time:.1f}s")
+                            st.metric("Temps Cycle Moy", f"{avg_cycle_time:.1f}s")
                     
                     with col3:
                         if total_time > 0:
                             production_rate = (total_shells / total_time) * 60
-                            st.metric("Production Rate", f"{production_rate:.1f} pcs/min")
+                            st.metric("Taux Production", f"{production_rate:.1f} pcs/min")
             
         if True:
-            with st.expander("🏭 Multi-Position Composite Analysis", expanded=False):
+            with st.expander(get_text("multi_position_header"), expanded=False):
                 
                 if not selected_position:
-                    st.info("📁 Please upload data files first to begin multi-position analysis.")
+                    st.info(get_text("upload_data_first_multi"))
                     st.markdown("""
                     **This analysis will provide:**
                     - 🏭 Multi-position glass shell journey visualization
@@ -1763,9 +1917,9 @@ if uploaded_files:
                                 ))
                         
                         fig.update_layout(
-                            title="Multi-Position Glass Shell Journey (Head Sensor)",
-                            xaxis_title="Time (seconds)",
-                            yaxis_title="Temperature (°C)",
+                            title="Parcours Multi-Position Coquille Verre (Capteur Tête)",
+                            xaxis_title="Temps (secondes)",
+                            yaxis_title="Température (°C)",
                             hovermode='x unified',
                             height=600
                         )
@@ -1773,7 +1927,7 @@ if uploaded_files:
                         st.plotly_chart(fig, use_container_width=True)
                         
                         # Position comparison table
-                        st.subheader("📊 Position Comparison")
+                        st.subheader(get_text("position_comparison"))
                         
                         comparison_data = []
                         for pos_name, pos_info in position_data.items():
@@ -1781,11 +1935,11 @@ if uploaded_files:
                             if 'Head' in df.columns:
                                 comparison_data.append({
                                     'Position': pos_name,
-                                    'Max Temp (°C)': df['Head'].max(),
-                                    'Min Temp (°C)': df['Head'].min(),
-                                    'Avg Temp (°C)': df['Head'].mean(),
-                                    'Duration (s)': df['Time_seconds'].max(),
-                                    'Samples': len(df)
+                                    'Temp Max (°C)': df['Head'].max(),
+                                    'Temp Min (°C)': df['Head'].min(),
+                                    'Temp Moy (°C)': df['Head'].mean(),
+                                    'Durée (s)': df['Time_seconds'].max(),
+                                    'Échantillons': len(df)
                                 })
                         
                         if comparison_data:
@@ -1793,14 +1947,14 @@ if uploaded_files:
                             st.dataframe(comparison_df, use_container_width=True)
                     
                     else:
-                        st.warning("⚠️ Please upload multiple position files for composite analysis")
+                        st.warning(get_text("upload_multiple_files"))
 
             
         if True:
-            with st.expander("🖼️ Interactive Plotly View", expanded=False):
+            with st.expander(get_text("interactive_header"), expanded=False):
                 
                 if not selected_position:
-                    st.info("📁 Please upload data files first to begin interactive plotting.")
+                    st.info(get_text("upload_data_first_interactive"))
                     st.markdown("""
                     **This analysis will provide:**
                     - 🖼️ Interactive temperature visualization
@@ -1815,7 +1969,7 @@ if uploaded_files:
                     df = position_data[selected_position]['data']
                     
                     sensor_columns = [col for col in df.columns if col not in ['Time', 'Time_seconds']]
-                    selected_sensors = st.multiselect("Select Sensors:", sensor_columns, default=sensor_columns[:3])
+                    selected_sensors = st.multiselect("Sélectionner Capteurs:", sensor_columns, default=sensor_columns[:3])
                     
                     fig = go.Figure()
                     for sensor in selected_sensors:
@@ -1827,9 +1981,9 @@ if uploaded_files:
                         ))
                     
                     fig.update_layout(
-                        title="Interactive Temperature View",
-                        xaxis_title="Time (seconds)",
-                        yaxis_title="Temperature (°C)",
+                        title="Vue Température Interactive",
+                        xaxis_title="Temps (secondes)",
+                        yaxis_title="Température (°C)",
                         hovermode='x unified',
                         height=600
                     )
@@ -1838,11 +1992,10 @@ if uploaded_files:
 
             
         if True:
-            with st.expander("📈 Full Line Thermal Journey", expanded=False):
-                st.info("🚀 **Mission 2**: Compare Head sensor temperatures across multiple positions to visualize the complete thermal journey")
+            with st.expander(get_text("thermal_journey_header"), expanded=False):
                 
                 # Multi-file upload section
-                st.subheader("📁 Upload Multiple Position Files")
+                st.subheader(get_text("upload_multiple_files"))
                 journey_files = st.file_uploader(
                 "Upload multiple .dat files for thermal journey analysis",
                 type=['dat'],
@@ -1977,10 +2130,10 @@ if uploaded_files:
                 
                 # Display journey analysis if we have data
                 if journey_data:
-                    st.success(f"✅ Successfully loaded {len(journey_data)} position files")
+
                     
                     # Create the thermal journey plot
-                    st.subheader("🌡️ Head Sensor Thermal Journey Comparison")
+                    st.subheader(get_text("head_sensor_journey"))
                     
                     fig = go.Figure()
                     
@@ -2015,13 +2168,13 @@ if uploaded_files:
                     # Professional styling
                     fig.update_layout(
                         title={
-                            'text': "🏭 Full Line Thermal Journey - Head Sensor Comparison",
+                            'text': "Parcours Thermique Ligne Complète - Comparaison Capteur Tête",
                             'x': 0.5,
                             'xanchor': 'center',
                             'font': {'size': 20, 'family': 'Arial Black'}
                         },
-                        xaxis_title="Time (s)",
-                        yaxis_title="Temperature (°C)",
+                        xaxis_title="Temps (s)",
+                        yaxis_title="Température (°C)",
                         hovermode='x unified',
                         height=700,
                         legend=dict(
@@ -2048,7 +2201,7 @@ if uploaded_files:
                     
                     # Journey insights
                     if positions_with_head:
-                        st.subheader("📊 Thermal Journey Insights")
+                        st.subheader(get_text("thermal_journey_insights"))
                         
                         # Create comparison table
                         comparison_data = []
@@ -2058,12 +2211,12 @@ if uploaded_files:
                             
                             comparison_data.append({
                                 'Position': position_name,
-                                'Max Temp (°C)': round(head_data.max(), 1),
-                                'Min Temp (°C)': round(head_data.min(), 1),
-                                'Avg Temp (°C)': round(head_data.mean(), 1),
-                                'Temp Range (°C)': round(head_data.max() - head_data.min(), 1),
-                                'Duration (s)': round(df['Time_seconds'].max(), 1),
-                                'Filename': journey_data[position_name]['filename']
+                                'Temp Max (°C)': round(head_data.max(), 1),
+                                'Temp Min (°C)': round(head_data.min(), 1),
+                                'Temp Moy (°C)': round(head_data.mean(), 1),
+                                'Plage Temp (°C)': round(head_data.max() - head_data.min(), 1),
+                                'Durée (s)': round(df['Time_seconds'].max(), 1),
+                                'Fichier': journey_data[position_name]['filename']
                             })
                         
                         comparison_df = pd.DataFrame(comparison_data)
@@ -2080,21 +2233,21 @@ if uploaded_files:
                         )
                         
                         # Quality assessment
-                        st.subheader("🎯 Line Performance Assessment")
+                        st.subheader(get_text("line_performance"))
                         
                         # Temperature consistency across positions
-                        max_temps = [data['Max Temp (°C)'] for data in comparison_data]
+                        max_temps = [data['Temp Max (°C)'] for data in comparison_data]
                         temp_std = np.std(max_temps)
                         temp_mean = np.mean(max_temps)
                         
                         col1, col2, col3 = st.columns(3)
                         with col1:
-                            st.metric("Positions Analyzed", len(positions_with_head))
+                            st.metric("Positions Analysées", len(positions_with_head))
                         with col2:
-                            st.metric("Avg Max Temperature", f"{temp_mean:.1f}°C")
+                            st.metric("Temp Max Moyenne", f"{temp_mean:.1f}°C")
                         with col3:
                             consistency_pct = (1 - temp_std/temp_mean) * 100 if temp_mean > 0 else 0
-                            st.metric("Temperature Consistency", f"{consistency_pct:.1f}%")
+                            st.metric("Cohérence Température", f"{consistency_pct:.1f}%")
                         
                         # Performance insights
                         if temp_std < 10:
@@ -2108,43 +2261,27 @@ if uploaded_files:
                         st.warning("⚠️ No Head sensor data found in uploaded files")
                 
                 else:
-                    st.error("❌ No valid data could be extracted from uploaded files")
+                    st.error(get_text("no_valid_data_extracted"))
             
             else:
-                st.info("📁 Upload multiple .dat files to begin thermal journey analysis")
-                st.markdown("""
-                **Expected files:**
-                - `cz_position6.dat`
-                - `cz_position12.dat` 
-                - `cz_position19.dat`
-                - etc.
-                
-                The system will automatically extract position numbers from filenames and compare Head sensor data.
-                """)
+                pass
 
             
         if True:
-            with st.expander("🧠 AI Summary & Reporting Assistant", expanded=False):
-                st.info("🚀 **Mission 3**: Generate intelligent thermal analysis reports using AI")
+            with st.expander(get_text("ai_summary_header"), expanded=False):
                 
                 # Create tabs for different report modes
                 tab1, tab2 = st.tabs(["🤖 AI Analysis", "📋 Report Template Generator"])
                 
                 with tab1:
                     # Original AI Analysis functionality
-                    st.subheader("🔑 AI Configuration")
                     
                     # Try to load API key from .env file first
                     env_api_key = os.getenv('OPENAI_API_KEY')
                     
                     if env_api_key:
-                        st.success("✅ OpenAI API key loaded from .env file")
                         openai_api_key = env_api_key
-                        # Show masked key for confirmation
-                        masked_key = env_api_key[:8] + "..." + env_api_key[-4:] if len(env_api_key) > 12 else "***"
-                        st.info(f"🔑 Using API key: {masked_key}")
                     else:
-                        st.info("💡 No API key found in .env file. Please enter manually or add OPENAI_API_KEY to your .env file")
                         openai_api_key = st.text_input(
                             "OpenAI API Key",
                             type="password",
@@ -2166,15 +2303,6 @@ if uploaded_files:
                         """)
                         st.stop()
                     
-                    # Report type selection
-                    st.subheader("📊 Report Type")
-                    report_type = st.radio(
-                        "Select report type:",
-                        ["Single Position Analysis", "Multi-Position Journey Report"],
-                        help="Choose between analyzing a single position or comparing multiple positions"
-                    )
-                
-                if report_type == "Single Position Analysis":
                     # Single file analysis
                     if position_data:
                         selected_position = st.selectbox(
@@ -2189,8 +2317,8 @@ if uploaded_files:
                             try:
                                 # Perform plateau detection for the report using rolling std
                                 sensor_for_detection = 'Head' if 'Head' in df.columns else df.columns[1]
-                                flat_th = 5.0
-                                min_dur = 2.0
+                                flat_th = 2.0  # Reduced from 5.0 to 2.0 for more sensitive detection
+                                min_dur = 1.0  # Reduced from 2.0 to 1.0 for shorter plateaus
                                 
                                 # Calculate data resolution
                                 df_res = 1.0 / (df['Time_seconds'].iloc[1] - df['Time_seconds'].iloc[0]) if len(df) > 1 else 1.0
@@ -2201,15 +2329,19 @@ if uploaded_files:
                                 def detect_plateaus_for_ai(data, sensor_data, flat_th, min_dur, df_res):
                                     plateaus = []
                                     
-                                    # Calculate rolling standard deviation with 0.5 second window
-                                    window_size = max(1, int(1/df_res * 0.5))
+                                    # Calculate rolling standard deviation with adaptive window
+                                    window_size = max(3, int(1/df_res * 0.3))  # Smaller window for more sensitivity
                                     roll_std = pd.Series(sensor_data).rolling(window=window_size, center=True).std()
                                     
                                     # Fill NaN values at the beginning and end
                                     roll_std = roll_std.fillna(method="bfill").fillna(method="ffill")
                                     
+                                    # Use adaptive threshold based on data characteristics
+                                    data_std = sensor_data.std()
+                                    adaptive_threshold = min(flat_th, data_std * 0.1)  # Use smaller of fixed or adaptive threshold
+                                    
                                     # Identify stable regions
-                                    stable = roll_std < flat_th
+                                    stable = roll_std < adaptive_threshold
                                     
                                     # Find continuous stable segments
                                     stable_segments = []
@@ -2229,7 +2361,7 @@ if uploaded_files:
                                     if current_segment is not None:
                                         stable_segments.append(current_segment)
                                     
-                                    # Filter segments by minimum duration
+                                    # Filter segments by minimum duration and temperature criteria
                                     for segment in stable_segments:
                                         start_time = data['Time_seconds'].iloc[segment['start']]
                                         end_time = data['Time_seconds'].iloc[segment['end']]
@@ -2238,16 +2370,19 @@ if uploaded_files:
                                         if duration >= min_dur:
                                             # Extract temperatures for this plateau
                                             plateau_temps = sensor_data.iloc[segment['start']:segment['end']+1]
+                                            avg_temp = plateau_temps.mean()
                                             
-                                            plateau = {
-                                                'start': segment['start'],
-                                                'end': segment['end'],
-                                                'duration': duration,
-                                                'avg_temp': plateau_temps.mean(),
-                                                'temps': plateau_temps.tolist(),
-                                                'std': plateau_temps.std()
-                                            }
-                                            plateaus.append(plateau)
+                                            # Only consider plateaus with reasonable temperatures (above ambient)
+                                            if avg_temp > 100:  # Assuming glass processing temperatures are above 100°C
+                                                plateau = {
+                                                    'start': segment['start'],
+                                                    'end': segment['end'],
+                                                    'duration': duration,
+                                                    'avg_temp': avg_temp,
+                                                    'temps': plateau_temps.tolist(),
+                                                    'std': plateau_temps.std()
+                                                }
+                                                plateaus.append(plateau)
                                     
                                     return plateaus
                                 
@@ -2381,25 +2516,25 @@ Analysis of {selected_position} reveals {analysis_data['shells_detected']} glass
 {f"No glass shells were detected in this thermal run. This could indicate equipment standby mode, sensor calibration issues, or data collection during non-production periods. Recommend verifying process status and detection parameters." if analysis_data['shells_detected'] == 0 else f"Production cycle completed successfully with {analysis_data['shells_detected']} shells detected. {'Process parameters are optimal for consistent glass production.' if not analysis_data['anomalies'] and 2 <= analysis_data['production_rate'] <= 6 else 'Minor process adjustments recommended to optimize thermal consistency and production efficiency.'}"}
 
 ---
-*Report generated by Sediver AI Thermal Analysis Assistant*
+*Report generated by Celcius AI*
 """
                                 
                                 # Display the AI report
-                                st.subheader("📋 AI Analysis Report")
+                                st.subheader(get_text("ai_analysis_report"))
                                 st.markdown(ai_response)
                                 
                                 # Interactive Shell Analysis (Optional Enhancement)
                                 if plateaus:
-                                    st.subheader("🔍 Interactive Shell Analysis")
-                                    st.info("Click on a shell below to view detailed thermal profile for that specific region")
+                                    st.subheader(get_text("interactive_shell_analysis"))
+                                    st.info(get_text("click_shell_info"))
                                     
                                     # Create shell selection
                                     shell_options = [f"Shell {i+1} ({p['avg_temp']:.1f}°C, {p['duration']:.1f}s)" for i, p in enumerate(plateaus)]
                                     selected_shell_idx = st.selectbox(
-                                        "Select shell for detailed analysis:",
+                                        get_text("select_shell_analysis"),
                                         range(len(shell_options)),
                                         format_func=lambda x: shell_options[x],
-                                        help="Choose a specific shell to analyze in detail"
+                                        help=get_text("choose_shell_detail")
                                     )
                                     
                                     if selected_shell_idx is not None:
@@ -2447,19 +2582,19 @@ Analysis of {selected_position} reveals {analysis_data['shells_detected']} glass
                                             x=shell_start_time,
                                             line_dash="dash",
                                             line_color="green",
-                                            annotation_text="Shell Start"
+                                            annotation_text=get_text("shell_start")
                                         )
                                         fig_shell.add_vline(
                                             x=shell_end_time,
                                             line_dash="dash",
                                             line_color="red",
-                                            annotation_text="Shell End"
+                                            annotation_text=get_text("shell_end")
                                         )
                                         
                                         fig_shell.update_layout(
-                                            title=f"🔍 Detailed Analysis - Shell {selected_shell_idx + 1}",
-                                            xaxis_title="Time (seconds)",
-                                            yaxis_title="Temperature (°C)",
+                                            title=f"🔍 Analyse Détaillée - Coquille {selected_shell_idx + 1}",
+                                            xaxis_title="Temps (secondes)",
+                                            yaxis_title="Température (°C)",
                                             hovermode='x unified',
                                             height=500,
                                             showlegend=True
@@ -2470,19 +2605,19 @@ Analysis of {selected_position} reveals {analysis_data['shells_detected']} glass
                                         # Shell-specific metrics
                                         col1, col2, col3, col4 = st.columns(4)
                                         with col1:
-                                            st.metric("Duration", f"{selected_plateau['duration']:.1f}s")
+                                            st.metric("Durée", f"{selected_plateau['duration']:.1f}s")
                                         with col2:
-                                            st.metric("Avg Temperature", f"{selected_plateau['avg_temp']:.1f}°C")
+                                            st.metric("Temp Moyenne", f"{selected_plateau['avg_temp']:.1f}°C")
                                         with col3:
                                             shell_data = df.iloc[selected_plateau['start']:selected_plateau['end']]
                                             temp_stability = shell_data[sensor_for_detection].std()
-                                            st.metric("Temperature Stability", f"±{temp_stability:.1f}°C")
+                                            st.metric("Stabilité Temp", f"±{temp_stability:.1f}°C")
                                         with col4:
                                             shell_quality = "Excellent" if temp_stability < 2 else "Good" if temp_stability < 5 else "Variable"
-                                            st.metric("Shell Quality", shell_quality)
+                                            st.metric("Qualité Coquille", shell_quality)
                                 
                                 # Download options
-                                st.subheader("📥 Download Options")
+                                st.subheader(get_text("download_options"))
                                 col1, col2 = st.columns(2)
                                 
                                 with col1:
@@ -2509,127 +2644,109 @@ Analysis of {selected_position} reveals {analysis_data['shells_detected']} glass
                             except Exception as e:
                                 st.error(f"Error generating AI report: {str(e)}")
                     else:
-                        st.info("📁 Please upload a .dat file first to generate single position reports")
-                
-                else:  # Multi-Position Journey Report
-                    st.subheader("📁 Upload Multiple Files for Journey Report")
-                    journey_files = st.file_uploader(
-                        "Upload multiple .dat files for AI journey analysis",
-                        type=['dat'],
-                        accept_multiple_files=True,
-                        help="Upload files like cz_position6.dat, cz_position12.dat, etc."
-                    )
-                    
-                    if journey_files and st.button("🧠 Generate Multi-Position AI Report", type="primary"):
-                        # Cache hygiene - clear stale data on new file upload
-                        st.session_state.pop("detected_shells", None)
-                        
-                        with st.spinner("🤖 AI is analyzing your multi-position thermal journey..."):
-                            # Process files and generate comprehensive report
-                            st.success("🚀 Multi-position AI reporting coming in next update!")
-                            st.info("This feature will analyze thermal consistency across the entire production line and provide strategic recommendations.")
+                        st.info(get_text("upload_dat_file"))
             
             with tab2:
                 # Report Template Generator
-                st.subheader("📋 Report Template Generator")
-                st.info("🎯 Generate professional thermal analysis reports without writing prompts")
+                st.subheader(get_text("report_template_generator"))
+                st.info(get_text("generate_professional_reports"))
                 
                 # Report Configuration Section
-                st.subheader("⚙️ Report Configuration")
+                st.subheader(get_text("report_configuration"))
                 
                 # Report Type Selection
                 col1, col2 = st.columns(2)
                 with col1:
                     template_report_type = st.selectbox(
-                        "📊 Report Type",
-                        ["Single Position", "Full Line Journey", "Anomaly Summary Only"],
-                        help="Choose the scope of your thermal analysis report"
+                        get_text("report_type"),
+                        [get_text("single_position"), get_text("full_line_journey"), get_text("anomaly_summary_only")],
+                        help=get_text("choose_report_scope")
                     )
                 
                 with col2:
                     output_format = st.selectbox(
-                        "📄 Output Format",
+                        get_text("output_format"),
                         [".txt", ".pdf"],
-                        help="Select the download format for your report"
+                        help=get_text("select_download_format")
                     )
                 
                 # Report Customization
-                st.subheader("🎨 Report Customization")
+                st.subheader(get_text("report_customization"))
                 
                 col1, col2 = st.columns(2)
                 with col1:
                     report_title = st.text_input(
-                        "📝 Report Title",
+                        get_text("report_title"),
                         value="Thermal Analysis Report",
-                        help="Enter a custom title for your report"
+                        help=get_text("enter_custom_title")
                     )
                     
                     analyst_name = st.text_input(
-                        "👤 Analyst Name",
+                        get_text("analyst_name"),
                         value="",
                         placeholder="e.g., Antoine Dubois",
-                        help="Enter the analyst's name"
+                        help=get_text("enter_analyst_name")
                     )
                 
                 with col2:
                     report_date = st.date_input(
-                        "📅 Report Date",
+                        get_text("report_date"),
                         value=pd.Timestamp.now().date(),
-                        help="Select the report generation date"
+                        help=get_text("select_report_date")
                     )
                     
                     company_name = st.text_input(
-                        "🏢 Company/Department",
+                        get_text("company_department"),
                         value="Sediver R&D",
-                        help="Enter company or department name"
+                        help=get_text("enter_company_dept")
                     )
                 
                 # Optional Sections Toggle
-                st.subheader("📑 Report Sections")
-                st.write("Toggle the sections you want to include in your report:")
+                st.subheader(get_text("report_sections"))
+                st.write(get_text("toggle_sections_info"))
                 
                 col1, col2, col3 = st.columns(3)
                 
                 with col1:
-                    include_executive = st.checkbox("📋 Executive Summary", value=True)
-                    include_shell_table = st.checkbox("🔍 Shell Detection Table", value=True)
+                    include_executive = st.checkbox(get_text("executive_summary"), value=True)
+                    include_shell_table = st.checkbox(get_text("shell_detection_table"), value=True)
                 
                 with col2:
-                    include_temp_profile = st.checkbox("🌡️ Temperature Profile", value=True)
-                    include_quality_alerts = st.checkbox("⚠️ Quality Alerts", value=True)
+                    include_temp_profile = st.checkbox(get_text("temperature_profile"), value=True)
+                    include_quality_alerts = st.checkbox(get_text("quality_alerts"), value=True)
                 
                 with col3:
-                    include_recommendations = st.checkbox("💡 Recommendations", value=True)
-                    include_charts = st.checkbox("📊 Charts & Graphs", value=False)
+                    include_recommendations = st.checkbox(get_text("recommendations"), value=True)
+                    include_charts = st.checkbox(get_text("charts_graphs"), value=False)
                 
                 # Data Selection for Report
-                st.subheader("📊 Data Selection")
+                st.subheader(get_text("data_selection"))
                 
                 if position_data:
-                    if template_report_type == "Single Position":
+                    if template_report_type == get_text("single_position"):
                         selected_position_template = st.selectbox(
-                            "Select Position for Report:",
+                            get_text("select_position_report"),
                             list(position_data.keys()),
                             key="template_position_select",
-                            help="Choose which position to include in the report"
+                            help=get_text("choose_position_include")
                         )
                         
                         # Show data preview
                         if selected_position_template:
                             df_preview = position_data[selected_position_template]['data']
-                            st.write(f"**Data Preview for {selected_position_template}:**")
+                            st.write(f"**{get_text('data_preview_for')} {selected_position_template}:**")
                             col1, col2, col3 = st.columns(3)
                             with col1:
-                                st.metric("Total Samples", len(df_preview))
+                                st.metric("Total Échantillons", len(df_preview))
                             with col2:
-                                st.metric("Duration", f"{df_preview['Time_seconds'].max():.1f}s")
+                                st.metric("Durée", f"{df_preview['Time_seconds'].max():.1f}s")
                             with col3:
                                 sensor_count = len([col for col in df_preview.columns if col not in ['Time', 'Time_seconds']])
-                                st.metric("Sensors", sensor_count)
+                                st.metric("Capteurs", sensor_count)
                     
-                    elif template_report_type == "Full Line Journey":
+                    elif template_report_type == get_text("full_line_journey"):
                         st.multiselect(
-                            "Select Positions for Journey Analysis:",
+                            get_text("select_positions_journey"),
                             list(position_data.keys()),
                             default=list(position_data.keys())[:3] if len(position_data) >= 3 else list(position_data.keys()),
                             key="template_journey_select"
@@ -2637,16 +2754,16 @@ Analysis of {selected_position} reveals {analysis_data['shells_detected']} glass
                     
                     else:  # Anomaly Summary Only
                         st.multiselect(
-                            "Select Positions for Anomaly Analysis:",
+                            get_text("select_positions_anomaly"),
                             list(position_data.keys()),
                             default=list(position_data.keys()),
                             key="template_anomaly_select"
                         )
                 
                 # Live Preview Section
-                st.subheader("👁️ Live Preview")
+                st.subheader(get_text("live_preview"))
                 
-                if st.button("🔄 Generate Preview", type="secondary"):
+                if st.button(get_text("generate_preview"), type="secondary"):
                     # Generate report preview
                     preview_content = f"""
 # {report_title}
@@ -2726,18 +2843,18 @@ This thermal analysis report provides comprehensive insights into the glass toug
 """
                     
                     # Display preview in expandable section
-                    with st.expander("📄 Report Preview", expanded=True):
+                    with st.expander(get_text("report_preview_header"), expanded=True):
                         st.markdown(preview_content)
                 
                 # Generate and Download Section
-                st.subheader("📥 Generate & Download")
+                st.subheader(get_text("generate_download"))
                 
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    if st.button("🚀 Generate Full Report", type="primary"):
-                        if position_data and (template_report_type == "Single Position" and selected_position_template):
-                            with st.spinner("📋 Generating your custom thermal report..."):
+                    if st.button(get_text("generate_full_report"), type="primary"):
+                        if position_data and (template_report_type == get_text("single_position") and selected_position_template):
+                            with st.spinner(get_text("generating_report")):
                                 # Here you would integrate with the actual data analysis
                                 # For now, we'll create a comprehensive template
                                 
@@ -2878,9 +2995,9 @@ Generated on: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}
                                 
                                 # Store the report for download
                                 st.session_state['generated_report'] = full_report
-                                st.success("✅ Report generated successfully!")
+                                st.success(get_text("report_generated_success"))
                         else:
-                            st.warning("⚠️ Please select position data and ensure all required fields are filled")
+                            st.warning(get_text("select_position_warning"))
                 
                 with col2:
                     # Download button (only show if report is generated)
@@ -2942,10 +3059,6 @@ Time;Head;1;2;3;4;
     """)
     
     st.markdown(f"""
-    **{get_text("file_naming")}**
-    - {get_text("single_position")} `cz_position6.dat`
-    - {get_text("multiple_positions")} `cz_position3.dat`, `cz_position6.dat`, `cz_position19.dat`
-    
     **{get_text("analysis_capabilities")}**
     - {get_text("plateau_detection")}
     - {get_text("peak_extraction")}
