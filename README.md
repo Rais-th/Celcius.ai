@@ -1,7 +1,7 @@
 # Celcius AI
 
 ## 🔥 Overview
-A specialized thermal analysis application built for R&D teams to analyze glass toughening processes. The app provides comprehensive analysis of temperature data from multiple positions with AI-powered reporting capabilities.
+A professional thermal analysis application designed for industrial R&D teams to analyze glass toughening processes. The application provides comprehensive analysis of temperature data from multiple sensor positions with AI-powered reporting capabilities.
 
 ## 🚀 Quick Start
 
@@ -77,8 +77,8 @@ ANALYSIS/
 
 #### 4. **PDF Generation**
 - **ReportLab**: Professional PDF reports
-- **Custom Templates**: SEDIVER branding
-- **Watermark Support**: Internal use marking
+- **Custom Templates**: Professional branding support
+- **Watermark Support**: Customizable marking
 
 ### Data Flow
 ```
@@ -224,64 +224,19 @@ echo "OPENAI_API_KEY=your_key" > .env
 4. **Advanced AI Models**: Custom thermal analysis models
 5. **Mobile Optimization**: Responsive mobile interface
 
-### Technical Debt
-1. **Code Splitting**: Break down large `app.py` file
-2. **Testing Suite**: Unit and integration tests
-3. **Documentation**: Inline code documentation
-4. **Performance**: Optimize large file handling
+## 🤝 Contributing
 
-## 🤝 Developer Handover Checklist
+### Development Setup
+1. Clone the repository
+2. Install dependencies: `pip install -r requirements.txt`
+3. Configure environment variables (see `.env.example`)
+4. Run the application: `streamlit run app.py`
 
-### Immediate Tasks
-- [ ] Review all analysis sections functionality
-- [ ] Test file upload with various formats
-- [ ] Verify AI integration works
-- [ ] Check PDF export functionality
-- [ ] Test responsive design
-
-### Knowledge Transfer
-- [ ] Understand data processing pipeline
-- [ ] Review Apple UI styling system
-- [ ] Learn Plotly visualization patterns
-- [ ] Understand AI prompt engineering
-- [ ] Review error handling strategies
-
-### Setup Requirements
-- [ ] Python environment setup
-- [ ] OpenAI API key configuration
-- [ ] Streamlit familiarity
-- [ ] CSS/styling knowledge
-- [ ] Data analysis understanding
-
-## 📞 Support & Maintenance
-
-### Key Dependencies
-- **Streamlit**: UI framework
-- **Plotly**: Visualization library
-- **Pandas**: Data manipulation
-- **OpenAI**: AI integration
-- **ReportLab**: PDF generation
-
-### Monitoring Points
-- File upload success rates
-- AI API response times
-- User session durations
-- Error frequencies
-- Performance metrics
-
-## 📝 Notes for Developers
-
-### Code Quality
+### Code Quality Guidelines
 - Follow PEP 8 style guidelines
 - Add docstrings to new functions
 - Implement proper error handling
 - Test with various data formats
-
-### UI/UX Principles
-- Maintain Apple design consistency
-- Ensure accessibility compliance
-- Optimize for user workflow
-- Provide clear feedback messages
 
 ### Performance Optimization
 - Lazy load large datasets
@@ -291,4 +246,4 @@ echo "OPENAI_API_KEY=your_key" > .env
 
 ---
 
-Dev: Rais Thelemuka | rthelemuka@gmail.com
+**Celcius AI** - Professional Thermal Analysis Solution
