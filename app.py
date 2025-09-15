@@ -3,11 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
-<<<<<<< HEAD
 from datetime import datetime, date
-=======
-from datetime import datetime
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
 import time
 from io import StringIO, BytesIO
 from dotenv import load_dotenv
@@ -17,10 +13,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, 
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib import colors
-<<<<<<< HEAD
 from reportlab.lib.colors import HexColor, black, whitesmoke, white, gray
-=======
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
 from reportlab.lib.enums import TA_CENTER
 from PIL import Image
 import tempfile
@@ -33,11 +26,7 @@ from io import BytesIO
 # English translations
 EN = {
     # Sidebar elements
-<<<<<<< HEAD
     "app_title": "SEDIVER Celsius AI",
-=======
-    "app_title": "SEDIVER Celcius AI",
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
     "control_panel": "Control Panel",
     "control_subtitle": "Specialized analysis for SEDIVER R&D team",
     "data_files": "📁 Data Files",
@@ -198,11 +187,7 @@ EN = {
 # French translations
 FR = {
     # Sidebar elements
-<<<<<<< HEAD
-    "app_title": "SEDIVER Celsius AI",
-=======
     "app_title": "SEDIVER Celcius AI",
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
     "control_panel": "Tour de Contrôle",
     "control_subtitle": "Analyse spécialisée pour l'équipe R&D SEDIVER",
     "data_files": "📁 Fichiers de Données",
@@ -602,283 +587,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-<<<<<<< HEAD
-def collect_ui_metadata(plant, line_number, glass_shell, campaign_number, file_date, line_speed, temperature_u4, toughening_positions, air_pressure, air_temperature, rotation_speed):
-    """Collect metadata from UI fields in Global Identification and Toughening Parameters"""
-    print("[DEBUG] Starting collect_ui_metadata function")
-    metadata = {}
-    
-    try:
-        # Global Identification fields
-        print("[DEBUG] Collecting Global Identification fields")
-        metadata['plant'] = plant or ''
-        metadata['line_number'] = line_number or ''
-        metadata['glass_shell'] = glass_shell or ''
-        metadata['campaign_number'] = campaign_number or ''
-        metadata['date'] = file_date or date.today()
-        print(f"[DEBUG] Global fields collected: {metadata}")
-        
-        # Toughening Parameters fields - Correct mapping based on PDF generation table
-        print("[DEBUG] Collecting Toughening Parameters fields")
-        # PDF expects: 'Line speed (pcs/min)' -> metadata.get('heating_temp')
-        metadata['heating_temp'] = line_speed or ''  # Line speed maps to heating_temp for PDF
-        # PDF expects: 'Temperature U4 furnace (°C)' -> metadata.get('heating_time')
-        metadata['heating_time'] = temperature_u4 or ''  # Temperature U4 maps to heating_time for PDF
-        # PDF expects: 'Number of toughening positions' -> metadata.get('toughening_positions')
-        metadata['toughening_positions'] = toughening_positions or ''  # Direct mapping
-        # PDF expects: 'Toughening air pressure top & bottom (bar)' -> metadata.get('quench_pressure')
-        metadata['quench_pressure'] = air_pressure or ''  # Air pressure maps to quench_pressure for PDF
-        # PDF expects: 'Air temperature (°C)' -> metadata.get('quench_time')
-        metadata['quench_time'] = air_temperature or ''  # Air temperature maps to quench_time for PDF
-        # PDF expects: 'Rotation speed (% / rpm)' -> metadata.get('rotation_speed')
-        metadata['rotation_speed'] = rotation_speed or ''  # Direct mapping
-        print(f"[DEBUG] All metadata collected successfully: {metadata}")
-        
-        return metadata
-    except Exception as e:
-        print(f"[ERROR] Error in collect_ui_metadata: {str(e)}")
-        print(f"[ERROR] Error type: {type(e).__name__}")
-        raise e
-
-def calculate_cooling_curve_data(analysis_results):
-    """Calculate cooling curve data from session state analysis results"""
-    print("[DEBUG] Starting calculate_cooling_curve_data function")
-    print(f"[DEBUG] Analysis results keys: {list(analysis_results.keys()) if analysis_results else 'None'}")
-    
-    cooling_curve_data = []
-    
-    try:
-        if not analysis_results:
-            print("[DEBUG] No analysis results found in session state")
-            return cooling_curve_data
-            
-        for position_name, shell_summary_df in analysis_results.items():
-            print(f"[DEBUG] Processing position: {position_name}")
-            print(f"[DEBUG] Shell summary shape for {position_name}: {shell_summary_df.shape}")
-            
-            if not shell_summary_df.empty and 'Start Temp (°C)' in shell_summary_df.columns:
-                # Calculate mean of the 'Start Temp (°C)' column for this position
-                mean_temp = shell_summary_df['Start Temp (°C)'].mean()
-                print(f"[DEBUG] Mean shell temperature for {position_name}: {mean_temp:.1f}°C")
-                
-                cooling_curve_data.append({
-                    'Position': position_name,
-                    'Mean_Shell_Temperature': round(mean_temp, 1)
-                })
-            else:
-                print(f"[DEBUG] No valid shell data found for {position_name}, skipping")
-        
-        print(f"[DEBUG] Cooling curve data: {cooling_curve_data}")
-        return cooling_curve_data
-    except Exception as e:
-        print(f"[ERROR] Error in calculate_cooling_curve_data: {str(e)}")
-        print(f"[ERROR] Error type: {type(e).__name__}")
-        raise e
-        print(f"[ERROR] Error type: {type(e).__name__}")
-        raise e
-
-def create_consolidated_shell_data(analysis_results):
-    """Create consolidated shell data table from session state analysis results"""
-    print("[DEBUG] Starting create_consolidated_shell_data function")
-    consolidated_data = []
-    
-    try:
-        print(f"[DEBUG] Analysis results keys: {list(analysis_results.keys())}")
-        
-        for position_name, shell_summary_df in analysis_results.items():
-            print(f"[DEBUG] Processing position: {position_name}")
-            print(f"[DEBUG] Shell summary DataFrame shape for {position_name}: {shell_summary_df.shape}")
-            
-            # Add Position column to the DataFrame
-            shell_summary_df_copy = shell_summary_df.copy()
-            shell_summary_df_copy['Position'] = position_name
-            
-            # Append to consolidated data list
-            consolidated_data.append(shell_summary_df_copy)
-        
-        # Concatenate all DataFrames into a single master DataFrame
-        if consolidated_data:
-            master_df = pd.concat(consolidated_data, ignore_index=True)
-            print(f"[DEBUG] Consolidated shell data created: {len(master_df)} records")
-            return master_df.to_dict('records')
-        else:
-            print(f"[DEBUG] No consolidated shell data created")
-            return []
-    except Exception as e:
-        print(f"[ERROR] Error in create_consolidated_shell_data: {str(e)}")
-        print(f"[ERROR] Error type: {type(e).__name__}")
-        raise e
-
-def generate_insight_briefing_pdf(metadata, cooling_curve_data, consolidated_shell_data):
-    """Generate multi-page Insight Briefing PDF with metadata, cooling curve, and shell data"""
-    print("[DEBUG] Starting generate_insight_briefing_pdf function")
-    print(f"[DEBUG] Metadata: {metadata}")
-    print(f"[DEBUG] Cooling curve data: {cooling_curve_data}")
-    print(f"[DEBUG] Consolidated shell data count: {len(consolidated_shell_data)}")
-    
-    try:
-        buffer = BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=0.5*inch, bottomMargin=0.5*inch)
-        print("[DEBUG] PDF document created successfully")
-        
-        # Get styles
-        styles = getSampleStyleSheet()
-        title_style = ParagraphStyle(
-            'CustomTitle',
-            parent=styles['Heading1'],
-            fontSize=18,
-            spaceAfter=20,
-            alignment=TA_CENTER,
-            textColor=HexColor('#1f4e79')
-        )
-        
-        heading_style = ParagraphStyle(
-            'CustomHeading',
-            parent=styles['Heading2'],
-            fontSize=14,
-            spaceAfter=12,
-            textColor=HexColor('#1f4e79')
-        )
-        
-        story = []
-        
-        # PAGE 1: INSIGHT PAGE
-        story.append(Paragraph("SEDIVER Insight Briefing", title_style))
-        story.append(Spacer(1, 20))
-        
-        # Metadata section
-        story.append(Paragraph("Global Identification", heading_style))
-        
-        metadata_data = [
-            ['Plant:', str(metadata.get('plant', 'N/A'))],
-            ['Line #:', str(metadata.get('line_number', 'N/A'))],
-            ['Glass Shell:', str(metadata.get('glass_shell', 'N/A'))],
-            ['Campaign #:', str(metadata.get('campaign_number', 'N/A'))],
-            ['Date:', str(metadata.get('date', 'N/A'))]
-        ]
-        
-        metadata_table = Table(metadata_data, colWidths=[2*inch, 3*inch])
-        metadata_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (0, -1), HexColor('#f0f0f0')),
-            ('TEXTCOLOR', (0, 0), (-1, -1), black),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('GRID', (0, 0), (-1, -1), 1, black)
-        ]))
-        
-        story.append(metadata_table)
-        story.append(Spacer(1, 20))
-        
-        # Toughening Parameters
-        story.append(Paragraph("Toughening Parameters", heading_style))
-        
-        toughening_data = [
-            ['Line speed (pcs/min):', str(metadata.get('heating_temp', 'N/A'))],
-            ['Temperature U4 furnace (°C):', str(metadata.get('heating_time', 'N/A'))],
-            ['Number of toughening positions with air / open positions:', str(metadata.get('toughening_positions', 'N/A'))],
-            ['Toughening air pressure top & bottom (bar):', str(metadata.get('quench_pressure', 'N/A'))],
-            ['Air temperature (°C):', str(metadata.get('quench_time', 'N/A'))],
-            ['Rotation speed (% / rpm):', str(metadata.get('rotation_speed', 'N/A'))]
-        ]
-        
-        toughening_table = Table(toughening_data, colWidths=[2*inch, 3*inch])
-        toughening_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (0, -1), HexColor('#f0f0f0')),
-            ('TEXTCOLOR', (0, 0), (-1, -1), black),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('GRID', (0, 0), (-1, -1), 1, black)
-        ]))
-        
-        story.append(toughening_table)
-        story.append(Spacer(1, 30))
-        
-        # Cooling Curve Chart
-        story.append(Paragraph("Cooling Curve Analysis", heading_style))
-        
-        if cooling_curve_data:
-            # Create Plotly chart
-            positions = [item['Position'] for item in cooling_curve_data]
-            temperatures = [item['Mean_Shell_Temperature'] for item in cooling_curve_data]
-            
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(
-                x=positions,
-                y=temperatures,
-                mode='lines+markers',
-                name='Mean Shell Temperature',
-                line=dict(color='#1f4e79', width=3),
-                marker=dict(size=8, color='#1f4e79')
-            ))
-            
-            fig.update_layout(
-                title='Position vs. Mean Shell Temperature',
-                xaxis_title='Position',
-                yaxis_title='Mean Shell Temperature (°C)',
-                width=600,
-                height=400,
-                showlegend=False
-            )
-            
-            # Save chart as image
-            img_bytes = fig.to_image(format="png", width=600, height=400)
-            img_buffer = BytesIO(img_bytes)
-            
-            # Add image to PDF
-            chart_img = RLImage(img_buffer, width=5*inch, height=3.3*inch)
-            story.append(chart_img)
-        else:
-            story.append(Paragraph("No cooling curve data available.", styles['Normal']))
-        
-        # PAGE 2: DATA APPENDIX
-        story.append(PageBreak())
-        story.append(Paragraph("Data Appendix - Consolidated Shell Data", title_style))
-        story.append(Spacer(1, 20))
-        
-        if consolidated_shell_data:
-            # Create consolidated data table
-            df_consolidated = pd.DataFrame(consolidated_shell_data)
-            
-            # Prepare table data
-            table_data = [list(df_consolidated.columns)]
-            for _, row in df_consolidated.iterrows():
-                table_data.append([str(val) for val in row.values])
-            
-            # Create table with appropriate column widths
-            num_cols = len(df_consolidated.columns)
-            col_width = 7.5 * inch / num_cols
-            
-            data_table = Table(table_data, colWidths=[col_width] * num_cols)
-            data_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), HexColor('#1f4e79')),
-                ('TEXTCOLOR', (0, 0), (-1, 0), whitesmoke),
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-                ('FONTSIZE', (0, 0), (-1, -1), 8),
-                ('GRID', (0, 0), (-1, -1), 1, black),
-                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [white, HexColor('#f0f0f0')])
-            ]))
-            
-            story.append(data_table)
-        else:
-            story.append(Paragraph("No shell data available.", styles['Normal']))
-        
-        # Build PDF
-        print("[DEBUG] Building PDF document")
-        doc.build(story)
-        buffer.seek(0)
-        print("[DEBUG] PDF generation completed successfully")
-        return buffer
-    except Exception as e:
-        print(f"[ERROR] Error in generate_insight_briefing_pdf: {str(e)}")
-        print(f"[ERROR] Error type: {type(e).__name__}")
-        raise e
-
-=======
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
 def generate_pdf_report(plateaus, df, fig, report_title="Thermal Analysis Report", 
                        analyst_name="Sediver Analyst", include_sections=None, 
                        pdf_type="full", add_watermark=False):
@@ -909,11 +617,7 @@ def generate_pdf_report(plateaus, df, fig, report_title="Thermal Analysis Report
                 from reportlab.lib import colors as rl_colors
                 canvas.saveState()
                 canvas.setFillAlpha(0.15)
-<<<<<<< HEAD
-                canvas.setFillColor(gray)
-=======
                 canvas.setFillColor(rl_colors.gray)
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
                 canvas.setFont("Helvetica-Bold", 48)
                 
                 # Calculate center position and rotate
@@ -1111,11 +815,7 @@ def generate_pdf_report(plateaus, df, fig, report_title="Thermal Analysis Report
         table.setStyle(TableStyle([
             # Header styling - modern blue gradient effect
             ('BACKGROUND', (0, 0), (-1, 0), sediver_blue),
-<<<<<<< HEAD
-            ('TEXTCOLOR', (0, 0), (-1, 0), white),
-=======
             ('TEXTCOLOR', (0, 0), (-1, 0), rl_colors.white),
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('FONTSIZE', (0, 0), (-1, 0), 9),
@@ -1131,11 +831,7 @@ def generate_pdf_report(plateaus, df, fig, report_title="Thermal Analysis Report
             
             # Clean alternating row colors
             ('BACKGROUND', (0, 1), (-1, -1), light_gray),
-<<<<<<< HEAD
-            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [white, light_gray]),
-=======
             ('ROWBACKGROUNDS', (0, 1), (-1, -1), [rl_colors.white, light_gray]),
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
             
             # Subtle grid lines
             ('GRID', (0, 0), (-1, -1), 0.5, Color(0.8, 0.8, 0.8)),
@@ -1651,23 +1347,6 @@ if uploaded_files:
                     if 'Time' not in df.columns:
                         df['Time'] = df['Time_seconds']
                 
-<<<<<<< HEAD
-                # Extract and parse date from header_info
-                if 'Date' in header_info:
-                    try:
-                        # Parse date string (format: DD/MM/YYYY)
-                        date_str = header_info['Date'].strip()
-                        parsed_date = datetime.strptime(date_str, "%d/%m/%Y").date()
-                        st.session_state.file_date = parsed_date
-                    except (ValueError, AttributeError) as e:
-                        # Fallback to today's date if parsing fails
-                        st.session_state.file_date = date.today()
-                else:
-                    # Default to today's date if no date in header
-                    st.session_state.file_date = date.today()
-                
-=======
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
                 position_data[position_name] = {
                     'data': df,
                     'header': header_info,
@@ -1757,11 +1436,7 @@ if uploaded_files:
                     with col1:
                         flat_th = st.slider(get_text("flatness_celsius"), 2, 10, 5)
                     with col2:
-<<<<<<< HEAD
-                        min_dur = st.slider(get_text("plateau_min_seconds"), 1, 20, 1)
-=======
                         min_dur = st.slider(get_text("plateau_min_seconds"), 1, 20, 2)
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
                     with col3:
                         # Create sensor options with Head as default
                         sensor_options = []
@@ -1788,28 +1463,6 @@ if uploaded_files:
                             help="Sélectionnez le capteur à utiliser pour la détection des plateaux"
                         )
                 
-<<<<<<< HEAD
-                # State management: Clear results when settings change
-                current_settings = {
-                    'position': selected_position,
-                    'flat_th': flat_th,
-                    'min_dur': min_dur,
-                    'sensor': sensor_for_detection
-                }
-                
-                # Check if settings have changed
-                if 'previous_settings' not in st.session_state:
-                    st.session_state.previous_settings = current_settings
-                elif st.session_state.previous_settings != current_settings:
-                    # Settings changed - clear any cached results
-                    st.session_state.pop("detected_shells", None)
-                    st.session_state.pop("shell_summary_data", None)
-                    st.session_state.previous_settings = current_settings
-                    # Force rerun to clear stale UI elements
-                    st.rerun()
-                
-=======
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
                 # Calculate data resolution
                 df_res = 1.0 / (df['Time_seconds'].iloc[1] - df['Time_seconds'].iloc[0]) if len(df) > 1 else 1.0
                 
@@ -1826,20 +1479,11 @@ if uploaded_files:
                     plateaus = []
                     
                     # Calculate rolling standard deviation with 0.5 second window
-<<<<<<< HEAD
-                    # Ensure minimum window size of 3 for meaningful std calculation
-                    window_size = max(3, int(1/df_res * 0.5))
-                    roll_std = pd.Series(sensor_data).rolling(window=window_size, center=True).std()
-                    
-                    # Fill NaN values at the beginning and end
-                    roll_std = roll_std.bfill().ffill()
-=======
                     window_size = max(1, int(1/df_res * 0.5))
                     roll_std = pd.Series(sensor_data).rolling(window=window_size, center=True).std()
                     
                     # Fill NaN values at the beginning and end
                     roll_std = roll_std.fillna(method="bfill").fillna(method="ffill")
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
                     
                     # Identify stable regions
                     stable = roll_std < flat_th
@@ -1862,11 +1506,6 @@ if uploaded_files:
                     if current_segment is not None:
                         stable_segments.append(current_segment)
                     
-<<<<<<< HEAD
-
-                    
-=======
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
                     # Filter segments by minimum duration
                     for segment in stable_segments:
                         start_time = data['Time_seconds'].iloc[segment['start']]
@@ -1876,38 +1515,6 @@ if uploaded_files:
                         if duration >= min_dur:
                             # Extract temperatures for this plateau
                             plateau_temps = sensor_data.iloc[segment['start']:segment['end']+1]
-<<<<<<< HEAD
-                            avg_temp = plateau_temps.mean()
-                            
-                            # Apply minimum temperature filter (300°C threshold)
-                            min_temp_threshold = 300.0
-                            if avg_temp >= min_temp_threshold:
-                                plateau = {
-                                    'start': segment['start'],
-                                    'end': segment['end'],
-                                    'start_time': start_time,
-                                    'end_time': end_time,
-                                    'duration': duration,
-                                    'start_temp': plateau_temps.iloc[0],
-                                    'end_temp': plateau_temps.iloc[-1],
-                                    'avg_temp': avg_temp,
-                                    'temps': plateau_temps.tolist(),
-                                    'std': plateau_temps.std()
-                                }
-                                plateaus.append(plateau)
-                    
-                    # Keep only final summary for terminal output
-                    print(f"Total shells detected: {len(plateaus)}")
-                    return plateaus, roll_std, stable
-                
-                plateaus, roll_std, stable_mask = detect_plateaus_rolling_std(df, df[sensor_for_detection], flat_th, min_dur, df_res)
-                
-                # Clear any cached results when no plateaus are detected
-                if not plateaus:
-                    st.session_state.pop("detected_shells", None)
-                    st.session_state.pop("shell_summary_data", None)
-                    st.session_state.pop("shell_summary_df", None)
-=======
                             
                             plateau = {
                                 'start': segment['start'],
@@ -1922,7 +1529,6 @@ if uploaded_files:
                     return plateaus, roll_std, stable
                 
                 plateaus, roll_std, stable_mask = detect_plateaus_rolling_std(df, sensor_data, flat_th, min_dur, df_res)
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
                 
                 # Show detection info
                 st.caption(get_text("sensor_flatness_duration").format(
@@ -1944,11 +1550,7 @@ if uploaded_files:
                         stable_percentage=stable_percentage
                     ))
                 else:
-<<<<<<< HEAD
-                    st.warning(get_text("no_plateau_found"))
-=======
                     st.caption(get_text("no_plateau_found"))
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
                 
                 # Create temperature curve plot with rolling std
                 fig = go.Figure()
@@ -2023,18 +1625,10 @@ if uploaded_files:
                 st.plotly_chart(fig, use_container_width=True)
                 
                 # Display detected plateaus with comprehensive metrics
-<<<<<<< HEAD
-                # Only show results if plateaus are actually detected in current run
-                if plateaus and len(plateaus) > 0:
-                    st.subheader(f"🎯 Coques de Verre Détectées: {len(plateaus)}")
-                    
-                    # Create Peak Temperature Summary (Antoine Le Du's requirement)
-=======
                 if plateaus:
                     st.subheader(f"🎯 Coques de Verre Détectées: {len(plateaus)}")
                     
                     # Create comprehensive shell summary
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
                     shell_summary_data = []
                     sensor_columns = [col for col in df.columns if col not in ['Time', 'Time_seconds']]
                     
@@ -2045,24 +1639,6 @@ if uploaded_files:
                         end_time = df['Time_seconds'].iloc[end_idx]
                         duration = plateau['duration']
                         
-<<<<<<< HEAD
-                        # Extract start and end temperatures from the sensor used for detection
-                        start_temp = df[sensor_for_detection].iloc[start_idx]
-                        end_temp = df[sensor_for_detection].iloc[end_idx]
-                        delta_t = start_temp - end_temp
-                        
-                        # Build shell metrics with new Peak Temperature Summary structure
-                        shell_metrics = {
-                            'Shell #': i + 1,
-                            'Start Time (s)': round(start_time, 2),
-                            'End Time (s)': round(end_time, 2),
-                            'Duration (s)': round(duration, 2),
-                            'Start Temp (°C)': round(start_temp, 1),
-                            'End Temp (°C)': round(end_temp, 1),
-                            'Delta-T (°C)': round(delta_t, 1)
-                        }
-                        
-=======
                         # Extract shell data for this plateau
                         shell_data = df.iloc[start_idx:end_idx+1]
                         
@@ -2081,20 +1657,11 @@ if uploaded_files:
                             shell_metrics[f'{sensor} Peak (°C)'] = round(peak_temp, 1)
                             shell_metrics[f'{sensor} Avg (°C)'] = round(avg_temp, 1)
                         
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
                         shell_summary_data.append(shell_metrics)
                     
                     # Create DataFrame
                     shell_summary_df = pd.DataFrame(shell_summary_data)
                     
-<<<<<<< HEAD
-                    # Save analysis results to session state for report generation
-                    if 'analysis_results' not in st.session_state:
-                        st.session_state['analysis_results'] = {}
-                    st.session_state['analysis_results'][selected_position] = shell_summary_df
-                    
-=======
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
                     # Display the table
                     st.dataframe(shell_summary_df, use_container_width=True)
                     
@@ -2111,21 +1678,12 @@ if uploaded_files:
                     # Production metrics
                     col1, col2, col3 = st.columns(3)
                     with col1:
-<<<<<<< HEAD
-                        st.metric("Number of glass shell analyzed", len(plateaus))
-                    with col2:
-                        # Calculate Speed (pcs/min) based on total recording duration
-                        total_duration = df['Time_seconds'].max() - df['Time_seconds'].min()
-                        speed_pcs_per_min = (len(plateaus) / (total_duration / 60)) if total_duration > 0 else 0
-                        st.metric("Speed (pcs/min)", f"{speed_pcs_per_min:.1f}")
-=======
                         st.metric("Total Coquilles Détectées", len(plateaus))
                     with col2:
                         if len(plateaus) > 1:
                             total_time = df['Time_seconds'].iloc[plateaus[-1]['end']] - df['Time_seconds'].iloc[plateaus[0]['start']]
                             pcs_per_min = (len(plateaus) / total_time) * 60
                             st.metric(get_text("production_rate"), f"{pcs_per_min:.1f} pcs/min")
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
                     with col3:
                         if len(plateaus) > 0:
                             avg_duration = np.mean([p['duration'] for p in plateaus])
@@ -2352,9 +1910,6 @@ if uploaded_files:
                         else:
                             st.error(get_text("no_sensor_data"))
             
-<<<<<<< HEAD
-        # Old Peak Temperature Data section removed - replaced by new plateau detection logic
-=======
         if True:
             with st.expander(get_text("peak_temp_header"), expanded=False):
                 
@@ -2443,7 +1998,6 @@ if uploaded_files:
                         if total_time > 0:
                             production_rate = (total_shells / total_time) * 60
                             st.metric(get_text("production_rate"), f"{production_rate:.1f} pcs/min")
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
             
         if True:
             with st.expander(get_text("multi_position_header"), expanded=False):
@@ -2835,93 +2389,6 @@ if uploaded_files:
         if True:
             with st.expander(get_text("ai_summary_header"), expanded=False):
                 
-<<<<<<< HEAD
-                # New single-section layout
-                st.header("Generate Insight Briefing")
-                
-                # First Expander: Global Identification
-                with st.expander("Global Identification", expanded=False):
-                    plant = st.text_input("Plant")
-                    line_number = st.text_input("Line #")
-                    glass_shell = st.text_input("Glass shell")
-                    campaign_number = st.text_input("Campaign #")
-                    # Use smart calendar input with extracted file date
-                    default_date = st.session_state.get('file_date', date.today())
-                    time_date = st.date_input("Time & date", value=default_date)
-                
-                # Second Expander: Toughening Parameters
-                with st.expander("Toughening Parameters", expanded=False):
-                    line_speed = st.text_input("Line speed (pcs/min)")
-                    temperature_u4 = st.text_input("Temperature U4 furnace (°C)")
-                    toughening_positions = st.text_input("Number of toughening positions with air / open positions")
-                    air_pressure = st.text_input("Toughening air pressure top & bottom (bar)")
-                    air_temperature = st.text_input("Air temperature (°C)")
-                    rotation_speed = st.text_input("Rotation speed (% / rpm)")
-                
-                # Generate Insight Briefing Button
-                if st.button("Generate Insight Briefing", type="primary"):
-                    if position_data:
-                        try:
-                            print("[DEBUG] Generate Insight Briefing button clicked")
-                            print(f"[DEBUG] Position data available: {list(position_data.keys())}")
-                            
-                            # Collect UI metadata
-                            print("[DEBUG] Step 1: Collecting UI metadata")
-                            metadata = collect_ui_metadata(
-                                plant, line_number, glass_shell, campaign_number, time_date,
-                                line_speed, temperature_u4, toughening_positions, air_pressure, air_temperature, rotation_speed
-                            )
-                            print(f"[DEBUG] Step 1 completed: {metadata}")
-                            
-                            # Calculate cooling curve data
-                            print("[DEBUG] Step 2: Calculating cooling curve data")
-                            cooling_curve_data = calculate_cooling_curve_data(st.session_state.get('analysis_results', {}))
-                            print(f"[DEBUG] Step 2 completed: {cooling_curve_data}")
-                            
-                            # Create consolidated shell data
-                            print("[DEBUG] Step 3: Creating consolidated shell data")
-                            consolidated_shell_data = create_consolidated_shell_data(st.session_state.get('analysis_results', {}))
-                            print(f"[DEBUG] Step 3 completed: {len(consolidated_shell_data)} records")
-                            
-                            # Generate PDF
-                            print("[DEBUG] Step 4: Generating PDF")
-                            pdf_buffer = generate_insight_briefing_pdf(metadata, cooling_curve_data, consolidated_shell_data)
-                            print("[DEBUG] Step 4 completed: PDF generated successfully")
-                            
-                            # Create download button
-                            st.success("✅ Insight Briefing PDF generated successfully!")
-                            
-                            # Display sample data for verification
-                            st.subheader("📊 Sample Data for Verification")
-                            
-                            # Show cooling curve data
-                            if cooling_curve_data:
-                                st.write("**Cooling Curve Data (Position vs Mean Shell Temperature):**")
-                                cooling_df = pd.DataFrame(cooling_curve_data)
-                                st.dataframe(cooling_df, use_container_width=True)
-                            
-                            # Show first 3 rows of consolidated shell data
-                            if consolidated_shell_data:
-                                st.write("**First 3 rows of Consolidated Peak Temperature Summary:**")
-                                consolidated_df = pd.DataFrame(consolidated_shell_data)
-                                st.dataframe(consolidated_df.head(3), use_container_width=True)
-                            
-                            # Download button
-                            st.download_button(
-                                label="📥 Download Insight Briefing PDF",
-                                data=pdf_buffer.getvalue(),
-                                file_name=f"SEDIVER_Insight_Briefing_{metadata.get('date', 'report')}.pdf",
-                                mime="application/pdf",
-                                type="primary"
-                            )
-                            
-                        except Exception as e:
-                            st.error(f"Error generating PDF: {str(e)}")
-                            st.write("Please ensure data files are properly loaded and try again.")
-                    else:
-                        st.warning("⚠️ Please upload thermal data files first to generate the Insight Briefing.")
-
-=======
                 # Create tabs for different report modes
                 tab1, tab2 = st.tabs(["🤖 AI Analysis", "📋 Report Template Generator"])
                 
@@ -3690,7 +3157,6 @@ Generated on: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}
                 
                 else:
                     st.info(get_text("upload_to_use"))
->>>>>>> 102e9028486595b497f6168f41ee9cb8a2b84ea9
 
 
 else:
