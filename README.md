@@ -1,4 +1,4 @@
-# Celcius AI
+# Celsius AI
 
 ## 🔥 Overview
 A professional thermal analysis application designed for industrial R&D teams to analyze glass toughening processes. The application provides comprehensive analysis of temperature data from multiple sensor positions with AI-powered reporting capabilities.
@@ -246,4 +246,4 @@ echo "OPENAI_API_KEY=your_key" > .env
 
 ---
 
-**Celcius AI** - Professional Thermal Analysis Solution
+**Celsius AI** - Professional Thermal Analysis Solution
