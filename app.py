@@ -1642,24 +1642,34 @@ if uploaded_files:
                     
                     # Only show sensor selection for cleaner interface
                     sensor_options = []
-                    
-                    # Add numbered sensors with descriptive names (1-4 -> Side A-D)
-                    sensor_names = {"1": "Side A", "2": "Side B", "3": "Side C", "4": "Side D"}
                     sensor_mapping = {}  # Maps display names back to original column names
-                    for i in range(1, 5):
-                        if str(i) in df.columns:
-                            display_name = sensor_names[str(i)]
+
+                    # Helper function to map sensor names to display names
+                    def get_sensor_display_name(col_name):
+                        """Map sensor column to friendly display name"""
+                        mapping = {"1": "Side A", "2": "Side B", "3": "Side C", "4": "Side D"}
+                        if col_name in mapping:
+                            return mapping[col_name]
+                        # Handle complex formats like "U6-#1" -> "Side A"
+                        if '#' in col_name:
+                            num = col_name.split('#')[-1]
+                            if num in mapping:
+                                return mapping[num]
+                        return col_name
+
+                    # Get all columns excluding Time and Head (case-insensitive)
+                    head_cols = [col for col in df.columns if col.lower() == 'head']
+                    exclude_cols = ['Time', 'Time_seconds', 'Unnamed: 6'] + head_cols
+
+                    # Add all temperature sensor columns with appropriate display names
+                    for col in df.columns:
+                        if col not in exclude_cols:
+                            display_name = get_sensor_display_name(col)
                             sensor_options.append(display_name)
-                            sensor_mapping[display_name] = str(i)
-                    
-                    # Add any other sensors excluding Head and Unnamed: 6
-                    other_sensors = [col for col in df.columns if col not in ['Time', 'Time_seconds', 'Head', 'Unnamed: 6'] + [str(i) for i in range(1, 5)]]
-                    for sensor in other_sensors:
-                        sensor_options.append(sensor)
-                        sensor_mapping[sensor] = sensor
-                    
-                    # Add average option
-                    if len([col for col in df.columns if col not in ['Time', 'Time_seconds', 'Unnamed: 6']]) > 1:
+                            sensor_mapping[display_name] = col
+
+                    # Add average option if multiple sensors available
+                    if len(sensor_options) > 1:
                         sensor_options.append('Average')
                         sensor_mapping['Average'] = 'Average'
                     
@@ -1784,15 +1794,28 @@ if uploaded_files:
                 fig = go.Figure()
                 
                 # Plot all sensor curves (Head sensor and Unnamed: 6 excluded)
-                sensor_columns = [col for col in df.columns if col not in ['Time', 'Time_seconds', 'Head', 'Unnamed: 6']]
+                # Handle case-insensitive Head column (HEAD vs Head)
+                head_cols = [col for col in df.columns if col.lower() == 'head']
+                exclude_cols = ['Time', 'Time_seconds', 'Unnamed: 6'] + head_cols
+                sensor_columns = [col for col in df.columns if col not in exclude_cols]
                 colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b']
-                
-                # Create sensor mapping for display names
-                sensor_names = {"1": "Side A", "2": "Side B", "3": "Side C", "4": "Side D"}
-                
+
+                # Create flexible sensor mapping for display names
+                # Maps both simple format (1,2,3,4) and complex format (U6-#1, U6-#2, etc.)
+                def get_display_name(sensor_name):
+                    """Convert sensor column name to display name"""
+                    simple_mapping = {"1": "Side A", "2": "Side B", "3": "Side C", "4": "Side D"}
+                    if sensor_name in simple_mapping:
+                        return simple_mapping[sensor_name]
+                    # Extract number from complex formats like "U6-#1" -> "Side A"
+                    if '#' in sensor_name:
+                        num = sensor_name.split('#')[-1]
+                        return simple_mapping.get(num, sensor_name)
+                    return sensor_name
+
                 for i, sensor in enumerate(sensor_columns):
                     # Get display name for legend
-                    display_name = sensor_names.get(sensor, sensor)
+                    display_name = get_display_name(sensor)
                     
                     fig.add_trace(go.Scatter(
                         x=df['Time_seconds'],
@@ -1846,64 +1869,362 @@ if uploaded_files:
                 
                 # Rolling standard deviation visualization removed
                 
-                # Detect position changes using new formula
-                threshold_temp = 150.0  # Position change threshold
-                position_changes = []
-                
-                # Find all points where temperature crosses below 150°C
+                # IMPROVED SHELL DETECTION ALGORITHM
+                # Detects shells chronologically to avoid missing shells at beginning
+                threshold_temp = 150.0  # Shell end threshold (temperature drop)
+                start_threshold = 480.0  # Shell start threshold (dynamic, can be adjusted)
+                broken_piece_threshold = 150.0  # Broken piece detection threshold
+                broken_piece_duration = 10.0  # Minimum duration in seconds to count as broken
+
                 temp_data = sensor_data.values
                 time_data = df['Time_seconds'].values
-                
-                for i in range(1, len(temp_data)):
-                    # Check if temperature crosses below threshold (from above to below)
-                    if temp_data[i] <= threshold_temp and temp_data[i-1] > threshold_temp:
-                        position_change = {
-                            'event_number': len(position_changes) + 1,
-                            'timestamp': time_data[i],
-                            'temperature': temp_data[i],
-                            'sensor': actual_sensor
-                        }
-                        position_changes.append(position_change)
-                
-                # Plateau markers removed - using new position change detection instead
-                
-                # Position change markers removed - red threshold line provides sufficient indication
-                
-                # Add markers at peak temperatures after crossing 480°C threshold
+
+                # Storage for detected shells
+                shells = []
                 shell_start_x = []
                 shell_start_y = []
-                for i in range(1, len(temp_data)):
-                    # Check if temperature crosses below threshold (from above to below)
-                    if temp_data[i] <= threshold_temp and temp_data[i-1] > threshold_temp:
-                        # Find the peak temperature after crossing 480°C threshold
-                        peak_temp = 0
-                        peak_time = 0
-                        peak_index = -1
-                        
-                        # Search for temperatures >= 480°C and find the maximum
-                        for j in range(i + 1, len(temp_data)):
-                            if temp_data[j] >= 480.0:
-                                # Track the highest temperature in this thermal cycle
-                                if temp_data[j] > peak_temp:
-                                    peak_temp = temp_data[j]
-                                    peak_time = time_data[j]
-                                    peak_index = j
-                            # Stop searching when temperature drops significantly (end of thermal cycle)
-                            elif peak_temp > 0 and temp_data[j] < peak_temp - 50:
-                                break
-                        
-                        # Add the peak point if found
-                        if peak_index != -1:
-                            shell_start_x.append(peak_time)
-                            shell_start_y.append(peak_temp)
-                
-                # Add shell start markers with distinctive icons
+                shell_end_x = []
+                shell_end_y = []
+                position_changes = []
+                broken_pieces = []
+
+                # State machine for shell detection
+                in_shell = False
+                current_shell_start_idx = -1
+                current_shell_peak_idx = -1
+                current_shell_peak_temp = 0
+
+                # Broken piece detection state
+                below_threshold_start_idx = -1
+                below_threshold_start_time = -1
+
+                # Adaptive threshold: use percentile-based approach if data is available
+                if len(temp_data) > 100:
+                    # Calculate dynamic start threshold based on actual data range
+                    max_temp = np.max(temp_data)
+                    min_temp = np.min(temp_data)
+                    temp_range = max_temp - min_temp
+
+                    # Use different strategies based on temperature range
+                    if max_temp > 450:
+                        # High-temp range (500-600°C) - use 75th percentile
+                        high_temps = temp_data[temp_data > 300]
+                        if len(high_temps) > 10:
+                            start_threshold = np.percentile(high_temps, 75)
+                        else:
+                            start_threshold = max_temp * 0.85
+                    elif max_temp > 250:
+                        # Medium-temp range (250-450°C) - use 60-70th percentile
+                        valid_temps = temp_data[temp_data > 150]
+                        if len(valid_temps) > 10:
+                            # Use 65th percentile for better detection
+                            start_threshold = np.percentile(valid_temps, 65)
+                        else:
+                            start_threshold = max_temp * 0.75
+                    else:
+                        # Low-temp range (<250°C) - use 70% of max
+                        start_threshold = max_temp * 0.70
+
+                    # Ensure reasonable minimum threshold (200°C)
+                    start_threshold = max(200.0, start_threshold)
+
+                    # Debug output for threshold selection
+                    print(f"Adaptive threshold: max={max_temp:.1f}°C, threshold={start_threshold:.1f}°C")
+
+                # Scan chronologically through all temperature data
+                for i in range(len(temp_data)):
+                    current_temp = temp_data[i]
+                    current_time = time_data[i]
+
+                    # BROKEN PIECE DETECTION: Track periods below threshold
+                    if current_temp <= broken_piece_threshold:
+                        # Start tracking if not already tracking
+                        if below_threshold_start_idx == -1:
+                            below_threshold_start_idx = i
+                            below_threshold_start_time = current_time
+                    else:
+                        # Temperature rose above threshold
+                        if below_threshold_start_idx != -1:
+                            # Calculate duration below threshold
+                            duration_below = current_time - below_threshold_start_time
+
+                            # If duration exceeds threshold, it's a broken piece
+                            if duration_below > broken_piece_duration:
+                                broken_piece = {
+                                    'piece_number': len(broken_pieces) + 1,
+                                    'start_idx': below_threshold_start_idx,
+                                    'start_time': below_threshold_start_time,
+                                    'end_idx': i - 1,
+                                    'end_time': time_data[i - 1],
+                                    'duration': duration_below,
+                                    'avg_temp': np.mean(temp_data[below_threshold_start_idx:i])
+                                }
+                                broken_pieces.append(broken_piece)
+
+                            # Reset tracking
+                            below_threshold_start_idx = -1
+                            below_threshold_start_time = -1
+
+                    if not in_shell:
+                        # SHELL START DETECTION: Look for temperature rising above threshold
+                        if current_temp >= start_threshold:
+                            in_shell = True
+                            current_shell_start_idx = i
+                            current_shell_peak_idx = i
+                            current_shell_peak_temp = current_temp
+                    else:
+                        # INSIDE SHELL: Track peak temperature
+                        if current_temp > current_shell_peak_temp:
+                            current_shell_peak_idx = i
+                            current_shell_peak_temp = current_temp
+
+                        # SHELL END DETECTION: Look for temperature dropping below threshold
+                        if current_temp <= threshold_temp:
+                            # Find the last peak before this drop
+                            # Search backwards from current position to find last local maximum
+                            end_peak_idx = current_shell_peak_idx
+                            end_peak_temp = current_shell_peak_temp
+
+                            # Look for a better end peak just before the drop
+                            for j in range(i - 1, max(current_shell_start_idx, i - 50), -1):
+                                if j <= 0 or j >= len(temp_data) - 1:
+                                    continue
+
+                                check_temp = temp_data[j]
+                                prev_temp = temp_data[j - 1]
+                                next_temp = temp_data[j + 1]
+
+                                # Local maximum with minimum temperature requirement
+                                if check_temp > prev_temp and check_temp > next_temp and check_temp >= 200:
+                                    end_peak_idx = j
+                                    end_peak_temp = check_temp
+                                    break
+
+                            # Record the shell
+                            shell = {
+                                'shell_number': len(shells) + 1,
+                                'start_idx': current_shell_start_idx,
+                                'start_time': time_data[current_shell_start_idx],
+                                'start_temp': current_shell_peak_temp,
+                                'end_idx': end_peak_idx,
+                                'end_time': time_data[end_peak_idx],
+                                'end_temp': end_peak_temp,
+                                'peak_idx': current_shell_peak_idx,
+                                'peak_temp': current_shell_peak_temp,
+                                'duration': time_data[end_peak_idx] - time_data[current_shell_start_idx]
+                            }
+                            shells.append(shell)
+
+                            # Add to visualization arrays
+                            shell_start_x.append(time_data[current_shell_peak_idx])
+                            shell_start_y.append(current_shell_peak_temp)
+                            shell_end_x.append(time_data[end_peak_idx])
+                            shell_end_y.append(end_peak_temp)
+
+                            # Record position change
+                            position_change = {
+                                'event_number': len(position_changes) + 1,
+                                'timestamp': time_data[i],
+                                'temperature': current_temp,
+                                'sensor': actual_sensor
+                            }
+                            position_changes.append(position_change)
+
+                            # Reset state for next shell
+                            in_shell = False
+                            current_shell_start_idx = -1
+                            current_shell_peak_idx = -1
+                            current_shell_peak_temp = 0
+
+                # Handle case where recording ends while still in a shell
+                if in_shell and current_shell_peak_idx != -1:
+                    end_idx = len(temp_data) - 1
+
+                    # Find last significant peak before end
+                    end_peak_idx = current_shell_peak_idx
+                    end_peak_temp = current_shell_peak_temp
+
+                    for j in range(end_idx - 1, max(current_shell_start_idx, end_idx - 50), -1):
+                        if j <= 0 or j >= len(temp_data) - 1:
+                            continue
+                        check_temp = temp_data[j]
+                        prev_temp = temp_data[j - 1]
+                        next_temp = temp_data[j + 1]
+
+                        if check_temp > prev_temp and check_temp > next_temp and check_temp >= 200:
+                            end_peak_idx = j
+                            end_peak_temp = check_temp
+                            break
+
+                    shell = {
+                        'shell_number': len(shells) + 1,
+                        'start_idx': current_shell_start_idx,
+                        'start_time': time_data[current_shell_start_idx],
+                        'start_temp': current_shell_peak_temp,
+                        'end_idx': end_peak_idx,
+                        'end_time': time_data[end_peak_idx],
+                        'end_temp': end_peak_temp,
+                        'peak_idx': current_shell_peak_idx,
+                        'peak_temp': current_shell_peak_temp,
+                        'duration': time_data[end_peak_idx] - time_data[current_shell_start_idx]
+                    }
+                    shells.append(shell)
+                    shell_start_x.append(time_data[current_shell_peak_idx])
+                    shell_start_y.append(current_shell_peak_temp)
+                    shell_end_x.append(time_data[end_peak_idx])
+                    shell_end_y.append(end_peak_temp)
+
+                # Handle case where recording ends while still below threshold (broken piece)
+                if below_threshold_start_idx != -1:
+                    end_idx = len(temp_data) - 1
+                    duration_below = time_data[end_idx] - below_threshold_start_time
+
+                    if duration_below > broken_piece_duration:
+                        broken_piece = {
+                            'piece_number': len(broken_pieces) + 1,
+                            'start_idx': below_threshold_start_idx,
+                            'start_time': below_threshold_start_time,
+                            'end_idx': end_idx,
+                            'end_time': time_data[end_idx],
+                            'duration': duration_below,
+                            'avg_temp': np.mean(temp_data[below_threshold_start_idx:end_idx+1])
+                        }
+                        broken_pieces.append(broken_piece)
+
+                # Store counts for summary
+                total_shells_detected = len(shells)
+                total_broken_pieces = len(broken_pieces)
+                total_pieces = total_shells_detected + total_broken_pieces
+                chattering_rate = (total_broken_pieces / total_pieces * 100) if total_pieces > 0 else 0
+
+                # PLATEAU DETECTION FOR EACH SHELL
+                # Analyze temperature stability within each shell (1-2 second plateaus)
+                # HEAD SENSOR SPECIAL LOGIC: Inverted profile - find LOWEST point
+                is_head_sensor = actual_sensor.lower() == 'head'
+
+                def detect_shell_plateau(shell_data, temp_data, time_data, is_head=False, min_duration=1.0, max_duration=2.5, stability_threshold=5.0):
+                    """
+                    Detect temperature plateau within a shell
+                    For Head sensor: inverted logic - finds LOWEST stable point (>130-140°C)
+                    For other sensors: finds HIGHEST stable point
+                    Returns: plateau info dict or None
+                    """
+                    start_idx = shell_data['start_idx']
+                    end_idx = shell_data['end_idx']
+
+                    if end_idx - start_idx < 5:  # Too short to have plateau
+                        return None
+
+                    # Extract shell temperature segment
+                    shell_temps = temp_data[start_idx:end_idx+1]
+                    shell_times = time_data[start_idx:end_idx+1]
+
+                    if len(shell_temps) < 5:
+                        return None
+
+                    # HEAD SENSOR: Use lower threshold (130-140°C) for valid temps
+                    head_min_temp = 130.0 if is_head else 0
+                    head_max_temp = 500.0  # Upper limit to filter out noise
+
+                    # Filter temperatures for Head sensor
+                    if is_head:
+                        valid_temps_mask = (shell_temps >= head_min_temp) & (shell_temps <= head_max_temp)
+                        if not np.any(valid_temps_mask):
+                            return None
+
+                    # Look for stable regions using rolling standard deviation
+                    window_size = max(3, int(len(shell_temps) * 0.2))  # 20% window
+
+                    best_plateau = None
+                    min_std = float('inf')
+
+                    # Scan for most stable region
+                    for i in range(len(shell_temps) - window_size):
+                        window_temps = shell_temps[i:i+window_size]
+                        window_std = np.std(window_temps)
+                        window_duration = shell_times[i+window_size-1] - shell_times[i]
+
+                        # For Head sensor, check if temps are in valid range
+                        if is_head:
+                            window_mean = np.mean(window_temps)
+                            if window_mean < head_min_temp or window_mean > head_max_temp:
+                                continue
+
+                        # Check if this window is stable enough and within duration range
+                        if window_std < stability_threshold and min_duration <= window_duration <= max_duration:
+                            if window_std < min_std:
+                                min_std = window_std
+                                best_plateau = {
+                                    'start_idx': start_idx + i,
+                                    'end_idx': start_idx + i + window_size - 1,
+                                    'start_time': shell_times[i],
+                                    'end_time': shell_times[i+window_size-1],
+                                    'duration': window_duration,
+                                    'avg_temp': np.mean(window_temps),
+                                    'std': window_std,
+                                    'is_stable': window_std < 3.0  # Very stable if std < 3°C
+                                }
+
+                    # If no stable plateau found, use temperature extreme
+                    if best_plateau is None:
+                        if is_head:
+                            # HEAD SENSOR: Find LOWEST temperature above threshold
+                            valid_temps = shell_temps[(shell_temps >= head_min_temp) & (shell_temps <= head_max_temp)]
+                            if len(valid_temps) > 0:
+                                min_temp = np.min(valid_temps)
+                                min_idx = np.where(shell_temps == min_temp)[0][0]
+                            else:
+                                min_idx = np.argmin(shell_temps)
+
+                            best_plateau = {
+                                'start_idx': start_idx + min_idx,
+                                'end_idx': start_idx + min_idx,
+                                'start_time': shell_times[min_idx],
+                                'end_time': shell_times[min_idx],
+                                'duration': 0,
+                                'avg_temp': shell_temps[min_idx],
+                                'std': 0,
+                                'is_stable': False
+                            }
+                        else:
+                            # NORMAL SENSORS: Find HIGHEST temperature (peak)
+                            peak_idx = np.argmax(shell_temps)
+                            best_plateau = {
+                                'start_idx': start_idx + peak_idx,
+                                'end_idx': start_idx + peak_idx,
+                                'start_time': shell_times[peak_idx],
+                                'end_time': shell_times[peak_idx],
+                                'duration': 0,
+                                'avg_temp': shell_temps[peak_idx],
+                                'std': 0,
+                                'is_stable': False
+                            }
+
+                    return best_plateau
+
+                # Add plateau analysis to each shell
+                for shell in shells:
+                    plateau = detect_shell_plateau(shell, temp_data, time_data, is_head=is_head_sensor)
+                    shell['plateau'] = plateau
+
+                    # Add representative temperature (average for stable, peak for unstable)
+                    if plateau:
+                        shell['representative_temp'] = plateau['avg_temp']
+                        if is_head_sensor:
+                            shell['temp_stability'] = 'Head (Low)' if plateau['is_stable'] else 'Head (Unstable)'
+                        else:
+                            shell['temp_stability'] = 'Stable' if plateau['is_stable'] else 'Unstable'
+                    else:
+                        shell['representative_temp'] = shell['peak_temp']
+                        shell['temp_stability'] = 'No Plateau'
+
+                # Add shell start markers
                 if shell_start_x and shell_start_y:
                     fig.add_trace(go.Scatter(
                         x=shell_start_x,
                         y=shell_start_y,
                         mode='markers',
-                        name="Shell Start Temperatures (>480°C)",
+                        name=f"Shell Start (n={total_shells_detected})",
                         marker=dict(
                             color='green',
                             size=12,
@@ -1913,54 +2234,14 @@ if uploaded_files:
                         hovertemplate="Shell Start<br>Time: %{x:.1f}s<br>Start Temp: %{y:.1f}°C<extra></extra>",
                         showlegend=True
                     ))
-                
-                # Add shell end detection using inverse formula - last peak before Under 150 events
-                shell_end_x = []
-                shell_end_y = []
-                for change in position_changes:
-                    under_150_time = change['timestamp']
-                    
-                    # Find the index of the Under 150 event
-                    under_150_index = -1
-                    for j in range(len(time_data)):
-                        if time_data[j] >= under_150_time:
-                            under_150_index = j
-                            break
-                    
-                    if under_150_index == -1:
-                        continue
-                    
-                    # Search backwards from Under 150 event to find the last local maximum (peak)
-                    last_peak_temp = 0
-                    last_peak_time = 0
-                    last_peak_index = -1
-                    
-                    # Look backwards from the Under 150 event
-                    for j in range(under_150_index - 1, 0, -1):
-                        current_temp = temp_data[j]
-                        prev_temp = temp_data[j - 1] if j > 0 else 0
-                        next_temp = temp_data[j + 1] if j < len(temp_data) - 1 else 0
-                        
-                        # Check if this is a local maximum (peak)
-                        # A peak is where temperature is higher than both neighbors
-                        if current_temp > prev_temp and current_temp > next_temp and current_temp >= 200:
-                            last_peak_temp = current_temp
-                            last_peak_time = time_data[j]
-                            last_peak_index = j
-                            break  # Found the last peak before Under 150, stop searching
-                    
-                    # Add the last peak point if found
-                    if last_peak_index != -1:
-                        shell_end_x.append(last_peak_time)
-                        shell_end_y.append(last_peak_temp)
-                
-                # Add shell end markers with distinctive icons
+
+                # Add shell end markers
                 if shell_end_x and shell_end_y:
                     fig.add_trace(go.Scatter(
                         x=shell_end_x,
                         y=shell_end_y,
                         mode='markers',
-                        name="Shell End Temperatures (Latest Peak)",
+                        name="Shell End",
                         marker=dict(
                             color='red',
                             size=12,
@@ -1970,10 +2251,46 @@ if uploaded_files:
                         hovertemplate="Shell End<br>Time: %{x:.1f}s<br>End Temp: %{y:.1f}°C<extra></extra>",
                         showlegend=True
                     ))
-                    
-                
+
+                # Add plateau markers (representative temperatures)
+                plateau_x = []
+                plateau_y = []
+                plateau_text = []
+                for shell in shells:
+                    if shell.get('plateau') and shell['plateau']['is_stable']:
+                        plateau = shell['plateau']
+                        # Mark the midpoint of the plateau
+                        mid_time = (plateau['start_time'] + plateau['end_time']) / 2
+                        plateau_x.append(mid_time)
+                        plateau_y.append(plateau['avg_temp'])
+                        if is_head_sensor:
+                            plateau_text.append(f"Shell {shell['shell_number']}: {plateau['avg_temp']:.1f}°C (Head-Low)")
+                        else:
+                            plateau_text.append(f"Shell {shell['shell_number']}: {plateau['avg_temp']:.1f}°C (Stable)")
+
+                if plateau_x and plateau_y:
+                    marker_color = 'cyan' if is_head_sensor else 'yellow'
+                    marker_symbol = 'triangle-down' if is_head_sensor else 'diamond'
+                    marker_name = "Head Plateaus (Low)" if is_head_sensor else "Stable Plateaus"
+
+                    fig.add_trace(go.Scatter(
+                        x=plateau_x,
+                        y=plateau_y,
+                        mode='markers',
+                        name=marker_name,
+                        marker=dict(
+                            color=marker_color,
+                            size=10,
+                            symbol=marker_symbol,
+                            line=dict(color='blue' if is_head_sensor else 'orange', width=2)
+                        ),
+                        text=plateau_text,
+                        hovertemplate="%{text}<extra></extra>",
+                        showlegend=True
+                    ))
+
                 # Add threshold line for reference
-                fig.add_hline(y=threshold_temp, line_dash="solid", line_color="red", 
+                fig.add_hline(y=threshold_temp, line_dash="solid", line_color="red",
                              annotation_text=f"Position Change Threshold ({threshold_temp}°C)",
                              annotation_position="bottom right")
                 
@@ -1987,7 +2304,135 @@ if uploaded_files:
                 )
                 
                 st.plotly_chart(fig, use_container_width=True)
-                
+
+                # Display shell detection summary
+                if shells or broken_pieces:
+                    st.subheader(f"📊 Shell Detection Summary - {selected_position}")
+
+                    # Calculate measurement time
+                    total_measurement_time = time_data[-1] - time_data[0] if len(time_data) > 0 else 0
+
+                    # Create summary metrics - Row 1
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("Total Shells Detected", total_shells_detected)
+                    with col2:
+                        st.metric("Measurement Time", f"{total_measurement_time:.1f}s")
+                    with col3:
+                        if shells:
+                            avg_shell_duration = np.mean([s['duration'] for s in shells])
+                            st.metric("Avg Shell Duration", f"{avg_shell_duration:.1f}s")
+                        else:
+                            st.metric("Avg Shell Duration", "N/A")
+                    with col4:
+                        production_rate = (total_shells_detected / total_measurement_time * 60) if total_measurement_time > 0 else 0
+                        st.metric("Production Rate", f"{production_rate:.1f} pcs/min")
+
+                    # Create summary metrics - Row 2 (Broken Pieces & Quality)
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("Broken Pieces", total_broken_pieces,
+                                  delta=None if total_broken_pieces == 0 else f"❌ {total_broken_pieces} broken",
+                                  delta_color="inverse")
+                    with col2:
+                        st.metric("Total Pieces", total_pieces)
+                    with col3:
+                        # Chattering rate with color coding
+                        chattering_color = "🟢" if chattering_rate < 5 else ("🟡" if chattering_rate < 15 else "🔴")
+                        st.metric("Chattering Rate", f"{chattering_color} {chattering_rate:.1f}%")
+                    with col4:
+                        quality_score = 100 - chattering_rate
+                        st.metric("Quality Score", f"{quality_score:.1f}%")
+
+                    # Temperature summary from detected shells
+                    if shells:
+                        avg_start_temp = np.mean([s['start_temp'] for s in shells])
+                        avg_end_temp = np.mean([s['end_temp'] for s in shells])
+                        avg_peak_temp = np.mean([s['peak_temp'] for s in shells])
+
+                        st.subheader("🌡️ Temperature Summary")
+                        temp_summary = {
+                            'Metric': ['Average Start Temp', 'Average Peak Temp', 'Average End Temp', 'Avg Delta (Start-End)'],
+                            'Value (°C)': [
+                                f"{avg_start_temp:.1f}",
+                                f"{avg_peak_temp:.1f}",
+                                f"{avg_end_temp:.1f}",
+                                f"{avg_start_temp - avg_end_temp:.1f}"
+                            ]
+                        }
+                        temp_summary_df = pd.DataFrame(temp_summary)
+                        st.dataframe(temp_summary_df, use_container_width=True, hide_index=True)
+
+                        # Plateau Analysis Table
+                        st.subheader("📊 Plateau Analysis (1-2s Stability)")
+
+                        if is_head_sensor:
+                            st.info("🔄 **Head Sensor Mode Active**: Using inverted logic - finding LOWEST stable temperatures above 130°C threshold.")
+                            st.markdown("""
+                            **Representative temperatures** for each shell (Head Sensor):
+                            - **Head (Low)**: Average of LOWEST stable temperatures in 1-2s plateau (>130°C)
+                            - **Head (Unstable)**: Minimum temperature (no stable plateau found)
+                            """)
+                        else:
+                            st.markdown("""
+                            **Representative temperatures** for each shell:
+                            - **Stable**: Average temperature of 1-2 second plateau (low variation)
+                            - **Unstable**: Peak temperature (high variation, no stable plateau)
+                            """)
+
+                        plateau_data = []
+                        stable_count = 0
+                        for shell in shells:
+                            plateau = shell.get('plateau')
+                            if plateau:
+                                stability = "✅ Stable" if plateau['is_stable'] else "⚠️ Unstable"
+                                if plateau['is_stable']:
+                                    stable_count += 1
+
+                                plateau_data.append({
+                                    'Shell #': shell['shell_number'],
+                                    'Representative Temp (°C)': f"{shell['representative_temp']:.1f}",
+                                    'Plateau Duration (s)': f"{plateau['duration']:.2f}" if plateau['duration'] > 0 else "N/A",
+                                    'Temp Std Dev (°C)': f"{plateau['std']:.2f}",
+                                    'Stability': stability
+                                })
+
+                        if plateau_data:
+                            plateau_df = pd.DataFrame(plateau_data)
+                            st.dataframe(plateau_df, use_container_width=True, hide_index=True)
+
+                            # Stability statistics
+                            stability_rate = (stable_count / len(shells) * 100) if shells else 0
+                            col1, col2, col3 = st.columns(3)
+                            with col1:
+                                st.metric("Stable Plateaus", f"{stable_count}/{len(shells)}")
+                            with col2:
+                                st.metric("Stability Rate", f"{stability_rate:.1f}%")
+                            with col3:
+                                avg_representative_temp = np.mean([s['representative_temp'] for s in shells])
+                                st.metric("Avg Representative Temp", f"{avg_representative_temp:.1f}°C")
+
+                    # Display broken pieces details if any detected
+                    if broken_pieces:
+                        st.subheader("💔 Broken Pieces Details")
+                        st.markdown(f"""
+                        **Detected {total_broken_pieces} broken piece(s)** - pieces that stayed below {broken_piece_threshold}°C
+                        for more than {broken_piece_duration} seconds (likely exploded during tempering).
+                        """)
+
+                        broken_pieces_data = []
+                        for bp in broken_pieces:
+                            broken_pieces_data.append({
+                                'Piece #': bp['piece_number'],
+                                'Start Time (s)': f"{bp['start_time']:.1f}",
+                                'End Time (s)': f"{bp['end_time']:.1f}",
+                                'Duration (s)': f"{bp['duration']:.1f}",
+                                'Avg Temp (°C)': f"{bp['avg_temp']:.1f}"
+                            })
+
+                        broken_df = pd.DataFrame(broken_pieces_data)
+                        st.dataframe(broken_df, use_container_width=True, hide_index=True)
+
                 # Display detected plateaus with comprehensive metrics
                 # Only show results if plateaus are actually detected in current run
                 if plateaus and len(plateaus) > 0:
@@ -2151,19 +2596,31 @@ if uploaded_files:
                         fig = go.Figure()
                         
                         colors = px.colors.qualitative.Set3
-                        
-                        # Mapping for sensor display names
-                        sensor_names = {'1': 'Side A', '2': 'Side B', '3': 'Side C', '4': 'Side D'}
-                        
+
+                        # Flexible sensor mapping for display names (handles both formats)
+                        def get_display_name(sensor_name):
+                            """Convert sensor column name to display name"""
+                            simple_mapping = {"1": "Side A", "2": "Side B", "3": "Side C", "4": "Side D"}
+                            if sensor_name in simple_mapping:
+                                return simple_mapping[sensor_name]
+                            # Extract number from complex formats like "U6-#1" -> "Side A"
+                            if '#' in sensor_name:
+                                num = sensor_name.split('#')[-1]
+                                return simple_mapping.get(num, sensor_name)
+                            return sensor_name
+
                         for i, (pos_name, pos_info) in enumerate(position_data.items()):
                             df = pos_info['data']
                             
                             # Use first available sensor (excluding Head and Unnamed: 6) for composite view
-                            available_sensors = [col for col in df.columns if col not in ['Time', 'Time_seconds', 'Head', 'Unnamed: 6']]
+                            # Handle case-insensitive Head column
+                            head_cols = [col for col in df.columns if col.lower() == 'head']
+                            exclude_cols = ['Time', 'Time_seconds', 'Unnamed: 6'] + head_cols
+                            available_sensors = [col for col in df.columns if col not in exclude_cols]
                             if available_sensors:
                                 sensor_to_use = available_sensors[0]
                                 # Get display name for sensor
-                                display_name = sensor_names.get(sensor_to_use, sensor_to_use)
+                                display_name = get_display_name(sensor_to_use)
                                 
                                 fig.add_trace(go.Scatter(
                                     x=df['Time_seconds'],
