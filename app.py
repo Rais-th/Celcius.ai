@@ -601,11 +601,11 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-def collect_ui_metadata(plant, line_number, glass_shell, campaign_number, file_date, line_speed, temperature_u4, toughening_positions, air_pressure, air_temperature, rotation_speed):
+def collect_ui_metadata(plant, line_number, glass_shell, campaign_number, file_date, line_speed, temperature_u4, toughening_positions, air_pressure_top, air_pressure_bottom, air_temperature, rotation_speed):
     """Collect metadata from UI fields in Global Identification and Toughening Parameters"""
     print("[DEBUG] Starting collect_ui_metadata function")
     metadata = {}
-    
+
     try:
         # Global Identification fields
         print("[DEBUG] Collecting Global Identification fields")
@@ -615,7 +615,7 @@ def collect_ui_metadata(plant, line_number, glass_shell, campaign_number, file_d
         metadata['campaign_number'] = campaign_number or ''
         metadata['date'] = file_date or date.today()
         print(f"[DEBUG] Global fields collected: {metadata}")
-        
+
         # Toughening Parameters fields - Correct mapping based on PDF generation table
         print("[DEBUG] Collecting Toughening Parameters fields")
         # PDF expects: 'Line speed (pcs/min)' -> metadata.get('heating_temp')
@@ -624,8 +624,9 @@ def collect_ui_metadata(plant, line_number, glass_shell, campaign_number, file_d
         metadata['heating_time'] = temperature_u4 or ''  # Temperature U4 maps to heating_time for PDF
         # PDF expects: 'Number of toughening positions' -> metadata.get('toughening_positions')
         metadata['toughening_positions'] = toughening_positions or ''  # Direct mapping
-        # PDF expects: 'Toughening air pressure top & bottom (bar)' -> metadata.get('quench_pressure')
-        metadata['quench_pressure'] = air_pressure or ''  # Air pressure maps to quench_pressure for PDF
+        # Store both pressure values separately as requested by Antoine
+        metadata['air_pressure_top'] = air_pressure_top or ''  # GS Top
+        metadata['air_pressure_bottom'] = air_pressure_bottom or ''  # GS Bottom
         # PDF expects: 'Air temperature (°C)' -> metadata.get('quench_time')
         metadata['quench_time'] = air_temperature or ''  # Air temperature maps to quench_time for PDF
         # PDF expects: 'Rotation speed (% / rpm)' -> metadata.get('rotation_speed')
@@ -710,7 +711,8 @@ def generate_insight_briefing_pdf(metadata, cooling_curve_data, consolidated_she
             ['Line speed (pcs/min):', str(metadata.get('heating_temp', 'N/A'))],
             ['Temperature U4 furnace (°C):', str(metadata.get('heating_time', 'N/A'))],
             ['Number of toughening positions with air / open positions:', str(metadata.get('toughening_positions', 'N/A'))],
-            ['Toughening air pressure top & bottom (bar):', str(metadata.get('quench_pressure', 'N/A'))],
+            ['GS Top (bar):', str(metadata.get('air_pressure_top', 'N/A'))],
+            ['GS Bottom (bar):', str(metadata.get('air_pressure_bottom', 'N/A'))],
             ['Air temperature (°C):', str(metadata.get('quench_time', 'N/A'))],
             ['Rotation speed (% / rpm):', str(metadata.get('rotation_speed', 'N/A'))]
         ]
@@ -734,14 +736,14 @@ def generate_insight_briefing_pdf(metadata, cooling_curve_data, consolidated_she
             
             # Create position averages data
             position_averages = []
-            sensor_names = {'1': 'Side A', '2': 'Side B', '3': 'Side C', '4': 'Side D'}
-            
+            # Keep original sensor names from .dat file
+
             for pos_name, pos_info in position_data.items():
                 df = pos_info['data']
                 available_sensors = [col for col in df.columns if col not in ['Time', 'Time_seconds', 'Head', 'Unnamed: 6']]
                 if available_sensors:
                     sensor_to_use = available_sensors[0]
-                    display_name = sensor_names.get(sensor_to_use, sensor_to_use)
+                    display_name = sensor_to_use  # Use original name
                     avg_temp = df[sensor_to_use].mean()
                     max_temp = df[sensor_to_use].max()
                     min_temp = df[sensor_to_use].min()
@@ -1644,17 +1646,10 @@ if uploaded_files:
                     sensor_options = []
                     sensor_mapping = {}  # Maps display names back to original column names
 
-                    # Helper function to map sensor names to display names
+                    # Helper function to return original sensor names (no mapping)
                     def get_sensor_display_name(col_name):
-                        """Map sensor column to friendly display name"""
-                        mapping = {"1": "Side A", "2": "Side B", "3": "Side C", "4": "Side D"}
-                        if col_name in mapping:
-                            return mapping[col_name]
-                        # Handle complex formats like "U6-#1" -> "Side A"
-                        if '#' in col_name:
-                            num = col_name.split('#')[-1]
-                            if num in mapping:
-                                return mapping[num]
+                        """Return original sensor name from .dat file"""
+                        # Keep original sensor names as specified by Antoine
                         return col_name
 
                     # Get all columns excluding Time and Head (case-insensitive)
@@ -1800,17 +1795,10 @@ if uploaded_files:
                 sensor_columns = [col for col in df.columns if col not in exclude_cols]
                 colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b']
 
-                # Create flexible sensor mapping for display names
-                # Maps both simple format (1,2,3,4) and complex format (U6-#1, U6-#2, etc.)
+                # Return original sensor names from .dat file (no mapping)
                 def get_display_name(sensor_name):
-                    """Convert sensor column name to display name"""
-                    simple_mapping = {"1": "Side A", "2": "Side B", "3": "Side C", "4": "Side D"}
-                    if sensor_name in simple_mapping:
-                        return simple_mapping[sensor_name]
-                    # Extract number from complex formats like "U6-#1" -> "Side A"
-                    if '#' in sensor_name:
-                        num = sensor_name.split('#')[-1]
-                        return simple_mapping.get(num, sensor_name)
+                    """Return original sensor name from .dat file"""
+                    # Keep original sensor names as specified by Antoine
                     return sensor_name
 
                 for i, sensor in enumerate(sensor_columns):
@@ -1875,6 +1863,7 @@ if uploaded_files:
                 start_threshold = 480.0  # Shell start threshold (dynamic, can be adjusted)
                 broken_piece_threshold = 150.0  # Broken piece detection threshold
                 broken_piece_duration = 10.0  # Minimum duration in seconds to count as broken
+                MIN_SHELL_DURATION = 9.0  # Minimum duration to count as valid shell (filters noise)
 
                 temp_data = sensor_data.values
                 time_data = df['Time_seconds'].values
@@ -2000,35 +1989,40 @@ if uploaded_files:
                                     end_peak_temp = check_temp
                                     break
 
-                            # Record the shell
-                            shell = {
-                                'shell_number': len(shells) + 1,
-                                'start_idx': current_shell_start_idx,
-                                'start_time': time_data[current_shell_start_idx],
-                                'start_temp': current_shell_peak_temp,
-                                'end_idx': end_peak_idx,
-                                'end_time': time_data[end_peak_idx],
-                                'end_temp': end_peak_temp,
-                                'peak_idx': current_shell_peak_idx,
-                                'peak_temp': current_shell_peak_temp,
-                                'duration': time_data[end_peak_idx] - time_data[current_shell_start_idx]
-                            }
-                            shells.append(shell)
+                            # Calculate shell duration
+                            shell_duration = time_data[end_peak_idx] - time_data[current_shell_start_idx]
 
-                            # Add to visualization arrays
-                            shell_start_x.append(time_data[current_shell_peak_idx])
-                            shell_start_y.append(current_shell_peak_temp)
-                            shell_end_x.append(time_data[end_peak_idx])
-                            shell_end_y.append(end_peak_temp)
+                            # Only record shell if it meets minimum duration (filters noise)
+                            if shell_duration >= MIN_SHELL_DURATION:
+                                # Record the shell
+                                shell = {
+                                    'shell_number': len(shells) + 1,
+                                    'start_idx': current_shell_start_idx,
+                                    'start_time': time_data[current_shell_start_idx],
+                                    'start_temp': current_shell_peak_temp,
+                                    'end_idx': end_peak_idx,
+                                    'end_time': time_data[end_peak_idx],
+                                    'end_temp': end_peak_temp,
+                                    'peak_idx': current_shell_peak_idx,
+                                    'peak_temp': current_shell_peak_temp,
+                                    'duration': shell_duration
+                                }
+                                shells.append(shell)
 
-                            # Record position change
-                            position_change = {
-                                'event_number': len(position_changes) + 1,
-                                'timestamp': time_data[i],
-                                'temperature': current_temp,
-                                'sensor': actual_sensor
-                            }
-                            position_changes.append(position_change)
+                                # Add to visualization arrays
+                                shell_start_x.append(time_data[current_shell_peak_idx])
+                                shell_start_y.append(current_shell_peak_temp)
+                                shell_end_x.append(time_data[end_peak_idx])
+                                shell_end_y.append(end_peak_temp)
+
+                                # Record position change
+                                position_change = {
+                                    'event_number': len(position_changes) + 1,
+                                    'timestamp': time_data[i],
+                                    'temperature': current_temp,
+                                    'sensor': actual_sensor
+                                }
+                                position_changes.append(position_change)
 
                             # Reset state for next shell
                             in_shell = False
@@ -2056,23 +2050,28 @@ if uploaded_files:
                             end_peak_temp = check_temp
                             break
 
-                    shell = {
-                        'shell_number': len(shells) + 1,
-                        'start_idx': current_shell_start_idx,
-                        'start_time': time_data[current_shell_start_idx],
-                        'start_temp': current_shell_peak_temp,
-                        'end_idx': end_peak_idx,
-                        'end_time': time_data[end_peak_idx],
-                        'end_temp': end_peak_temp,
-                        'peak_idx': current_shell_peak_idx,
-                        'peak_temp': current_shell_peak_temp,
-                        'duration': time_data[end_peak_idx] - time_data[current_shell_start_idx]
-                    }
-                    shells.append(shell)
-                    shell_start_x.append(time_data[current_shell_peak_idx])
-                    shell_start_y.append(current_shell_peak_temp)
-                    shell_end_x.append(time_data[end_peak_idx])
-                    shell_end_y.append(end_peak_temp)
+                    # Calculate shell duration
+                    shell_duration = time_data[end_peak_idx] - time_data[current_shell_start_idx]
+
+                    # Only record shell if it meets minimum duration (filters noise)
+                    if shell_duration >= MIN_SHELL_DURATION:
+                        shell = {
+                            'shell_number': len(shells) + 1,
+                            'start_idx': current_shell_start_idx,
+                            'start_time': time_data[current_shell_start_idx],
+                            'start_temp': current_shell_peak_temp,
+                            'end_idx': end_peak_idx,
+                            'end_time': time_data[end_peak_idx],
+                            'end_temp': end_peak_temp,
+                            'peak_idx': current_shell_peak_idx,
+                            'peak_temp': current_shell_peak_temp,
+                            'duration': shell_duration
+                        }
+                        shells.append(shell)
+                        shell_start_x.append(time_data[current_shell_peak_idx])
+                        shell_start_y.append(current_shell_peak_temp)
+                        shell_end_x.append(time_data[end_peak_idx])
+                        shell_end_y.append(end_peak_temp)
 
                 # Handle case where recording ends while still below threshold (broken piece)
                 if below_threshold_start_idx != -1:
@@ -2095,7 +2094,7 @@ if uploaded_files:
                 total_shells_detected = len(shells)
                 total_broken_pieces = len(broken_pieces)
                 total_pieces = total_shells_detected + total_broken_pieces
-                chattering_rate = (total_broken_pieces / total_pieces * 100) if total_pieces > 0 else 0
+                shattering_rate = (total_broken_pieces / total_pieces * 100) if total_pieces > 0 else 0
 
                 # PLATEAU DETECTION FOR EACH SHELL
                 # Analyze temperature stability within each shell (1-2 second plateaus)
@@ -2320,7 +2319,18 @@ if uploaded_files:
                         st.metric("Measurement Time", f"{total_measurement_time:.1f}s")
                     with col3:
                         if shells:
-                            avg_shell_duration = np.mean([s['duration'] for s in shells])
+                            # Calculate duration including gap to next piece (Antoine's specification)
+                            # Duration = stationary time + time until next piece starts
+                            durations_with_gaps = []
+                            for i in range(len(shells)):
+                                if i < len(shells) - 1:
+                                    # Time from this shell start to next shell start
+                                    duration_with_gap = shells[i+1]['start_time'] - shells[i]['start_time']
+                                    durations_with_gaps.append(duration_with_gap)
+                                else:
+                                    # Last shell: use only stationary duration
+                                    durations_with_gaps.append(shells[i]['duration'])
+                            avg_shell_duration = np.mean(durations_with_gaps)
                             st.metric("Avg Shell Duration", f"{avg_shell_duration:.1f}s")
                         else:
                             st.metric("Avg Shell Duration", "N/A")
@@ -2337,11 +2347,11 @@ if uploaded_files:
                     with col2:
                         st.metric("Total Pieces", total_pieces)
                     with col3:
-                        # Chattering rate with color coding
-                        chattering_color = "🟢" if chattering_rate < 5 else ("🟡" if chattering_rate < 15 else "🔴")
-                        st.metric("Chattering Rate", f"{chattering_color} {chattering_rate:.1f}%")
+                        # Shattering rate with color coding
+                        shattering_color = "🟢" if shattering_rate < 5 else ("🟡" if shattering_rate < 15 else "🔴")
+                        st.metric("Shattering Rate", f"{shattering_color} {shattering_rate:.1f}%")
                     with col4:
-                        quality_score = 100 - chattering_rate
+                        quality_score = 100 - shattering_rate
                         st.metric("Quality Score", f"{quality_score:.1f}%")
 
                     # Temperature summary from detected shells
@@ -2599,14 +2609,8 @@ if uploaded_files:
 
                         # Flexible sensor mapping for display names (handles both formats)
                         def get_display_name(sensor_name):
-                            """Convert sensor column name to display name"""
-                            simple_mapping = {"1": "Side A", "2": "Side B", "3": "Side C", "4": "Side D"}
-                            if sensor_name in simple_mapping:
-                                return simple_mapping[sensor_name]
-                            # Extract number from complex formats like "U6-#1" -> "Side A"
-                            if '#' in sensor_name:
-                                num = sensor_name.split('#')[-1]
-                                return simple_mapping.get(num, sensor_name)
+                            """Return original sensor name from .dat file"""
+                            # Keep original sensor names as specified by Antoine
                             return sensor_name
 
                         for i, (pos_name, pos_info) in enumerate(position_data.items()):
@@ -2693,7 +2697,12 @@ if uploaded_files:
                 line_speed = st.text_input("Line speed (pcs/min)")
                 temperature_u4 = st.text_input("Temperature U4 furnace (°C)")
                 toughening_positions = st.text_input("Number of toughening positions with air / open positions")
-                air_pressure = st.text_input("Toughening air pressure top & bottom (bar)")
+                # Split pressure into two fields as requested by Antoine
+                col_p1, col_p2 = st.columns(2)
+                with col_p1:
+                    air_pressure_top = st.text_input("GS Top (bar)")
+                with col_p2:
+                    air_pressure_bottom = st.text_input("GS Bottom (bar)")
                 air_temperature = st.text_input("Air temperature (°C)")
                 rotation_speed = st.text_input("Rotation speed (% / rpm)")
                 
@@ -2708,7 +2717,7 @@ if uploaded_files:
                             print("[DEBUG] Step 1: Collecting UI metadata")
                             metadata = collect_ui_metadata(
                                 plant, line_number, glass_shell, campaign_number, time_date,
-                                line_speed, temperature_u4, toughening_positions, air_pressure, air_temperature, rotation_speed
+                                line_speed, temperature_u4, toughening_positions, air_pressure_top, air_pressure_bottom, air_temperature, rotation_speed
                             )
                             print(f"[DEBUG] Step 1 completed: {metadata}")
                             
@@ -2770,3 +2779,4 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
