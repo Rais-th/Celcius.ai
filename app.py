@@ -1864,7 +1864,7 @@ if uploaded_files:
                 start_threshold = 480.0  # Shell start threshold (dynamic, can be adjusted)
                 broken_piece_threshold = 150.0  # Broken piece detection threshold
                 broken_piece_duration = 10.0  # Minimum duration in seconds to count as broken
-                MIN_SHELL_DURATION = 3.0  # Reduced from 9.0 to detect faster-moving pieces
+                MIN_SHELL_DURATION = 9.0  # Complete shells have 9-10s duration; partials (≤7s) are excluded
                 MIN_GAP_BETWEEN_SHELLS = 0.3  # Reduced from 2.0 for rapid production (0.4s gaps)
 
                 temp_data = sensor_data.values
@@ -2016,8 +2016,18 @@ if uploaded_files:
                                         # Too close to previous shell - might be continuation or noise
                                         print(f"[DEBUG] Shell rejected: gap {gap_from_previous:.1f}s < {MIN_GAP_BETWEEN_SHELLS}s minimum")
                                 else:
-                                    # First shell - no gap check needed
-                                    valid_shell = True
+                                    # First shell - check if it's a partial piece (Shell End without Shell Start)
+                                    time_from_start = time_data[current_shell_start_idx]
+                                    initial_temp = temp_data[0]
+                                    FIRST_SHELL_TIME_THRESHOLD = 2.0  # seconds
+                                    FIRST_SHELL_TEMP_THRESHOLD = 350.0  # °C
+
+                                    # If recording starts with already-hot piece (Shell End without Shell Start)
+                                    if time_from_start < FIRST_SHELL_TIME_THRESHOLD and initial_temp > FIRST_SHELL_TEMP_THRESHOLD:
+                                        valid_shell = False
+                                        print(f"[DEBUG] First shell rejected: Shell End without Shell Start (starts at {time_from_start:.1f}s, initial temp {initial_temp:.1f}°C)")
+                                    else:
+                                        valid_shell = True
                             else:
                                 print(f"[DEBUG] Shell rejected: duration {shell_duration:.1f}s < {MIN_SHELL_DURATION}s minimum")
 
@@ -2097,7 +2107,18 @@ if uploaded_files:
                             else:
                                 print(f"[DEBUG] Final shell rejected: gap {gap_from_previous:.1f}s < {MIN_GAP_BETWEEN_SHELLS}s minimum")
                         else:
-                            valid_shell = True
+                            # First shell when recording ends - check if it's a partial piece
+                            time_from_start = time_data[current_shell_start_idx]
+                            initial_temp = temp_data[0]
+                            FIRST_SHELL_TIME_THRESHOLD = 2.0  # seconds
+                            FIRST_SHELL_TEMP_THRESHOLD = 350.0  # °C
+
+                            # If recording starts with already-hot piece (Shell End without Shell Start)
+                            if time_from_start < FIRST_SHELL_TIME_THRESHOLD and initial_temp > FIRST_SHELL_TEMP_THRESHOLD:
+                                valid_shell = False
+                                print(f"[DEBUG] Final shell rejected: Shell End without Shell Start (starts at {time_from_start:.1f}s, initial temp {initial_temp:.1f}°C)")
+                            else:
+                                valid_shell = True
                     else:
                         print(f"[DEBUG] Final shell rejected: duration {shell_duration:.1f}s < {MIN_SHELL_DURATION}s minimum")
 
@@ -2140,6 +2161,7 @@ if uploaded_files:
                         broken_pieces.append(broken_piece)
 
                 # Store counts for summary
+                # Note: With MIN_SHELL_DURATION = 9.0s, partial pieces (≤7s) are already filtered out
                 total_shells_detected = len(shells)
                 total_broken_pieces = len(broken_pieces)
                 total_pieces = total_shells_detected + total_broken_pieces
@@ -2150,7 +2172,7 @@ if uploaded_files:
                 print(f"  - Total shells detected: {total_shells_detected}")
                 print(f"  - Total broken pieces: {total_broken_pieces}")
                 print(f"  - Total pieces: {total_pieces}")
-                print(f"  - MIN_SHELL_DURATION: {MIN_SHELL_DURATION}s")
+                print(f"  - MIN_SHELL_DURATION: {MIN_SHELL_DURATION}s (filters partials ≤7s)")
                 print(f"  - MIN_GAP_BETWEEN_SHELLS: {MIN_GAP_BETWEEN_SHELLS}s")
                 if shells:
                     durations = [s['duration'] for s in shells]
@@ -2840,5 +2862,3 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-
