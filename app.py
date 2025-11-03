@@ -1860,10 +1860,12 @@ if uploaded_files:
                 # IMPROVED SHELL DETECTION ALGORITHM
                 # Detects shells chronologically to avoid missing shells at beginning
                 threshold_temp = 150.0  # Shell end threshold (temperature drop)
+                intermediate_threshold = 250.0  # Alternative threshold for pieces that stay hot
                 start_threshold = 480.0  # Shell start threshold (dynamic, can be adjusted)
                 broken_piece_threshold = 150.0  # Broken piece detection threshold
                 broken_piece_duration = 10.0  # Minimum duration in seconds to count as broken
-                MIN_SHELL_DURATION = 9.0  # Minimum duration to count as valid shell (filters noise)
+                MIN_SHELL_DURATION = 3.0  # Reduced from 9.0 to detect faster-moving pieces
+                MIN_GAP_BETWEEN_SHELLS = 0.3  # Reduced from 2.0 for rapid production (0.4s gaps)
 
                 temp_data = sensor_data.values
                 time_data = df['Time_seconds'].values
@@ -1967,8 +1969,15 @@ if uploaded_files:
                             current_shell_peak_idx = i
                             current_shell_peak_temp = current_temp
 
-                        # SHELL END DETECTION: Look for temperature dropping below threshold
-                        if current_temp <= threshold_temp:
+                        # SHELL END DETECTION: Dynamic threshold based on temperature range
+                        # Use intermediate threshold if temps stay high between pieces
+                        end_threshold = threshold_temp
+                        if i > current_shell_start_idx + 10:  # Check after some data points
+                            min_temp_in_shell = np.min(temp_data[current_shell_start_idx:i])
+                            if min_temp_in_shell > 200:  # Temps staying high
+                                end_threshold = intermediate_threshold  # Use 250°C instead of 150°C
+
+                        if current_temp <= end_threshold:
                             # Find the last peak before this drop
                             # Search backwards from current position to find last local maximum
                             end_peak_idx = current_shell_peak_idx
@@ -1992,8 +2001,27 @@ if uploaded_files:
                             # Calculate shell duration
                             shell_duration = time_data[end_peak_idx] - time_data[current_shell_start_idx]
 
-                            # Only record shell if it meets minimum duration (filters noise)
+                            # Validate shell with two criteria
+                            valid_shell = False
+                            gap_from_previous = float('inf')  # Default to infinite gap (always valid for first shell)
+
+                            # Check 1: Minimum duration (filters noise)
                             if shell_duration >= MIN_SHELL_DURATION:
+                                # Check 2: Minimum gap from previous shell (prevents merging)
+                                if len(shells) > 0:
+                                    gap_from_previous = time_data[current_shell_start_idx] - shells[-1]['end_time']
+                                    if gap_from_previous >= MIN_GAP_BETWEEN_SHELLS:
+                                        valid_shell = True
+                                    else:
+                                        # Too close to previous shell - might be continuation or noise
+                                        print(f"[DEBUG] Shell rejected: gap {gap_from_previous:.1f}s < {MIN_GAP_BETWEEN_SHELLS}s minimum")
+                                else:
+                                    # First shell - no gap check needed
+                                    valid_shell = True
+                            else:
+                                print(f"[DEBUG] Shell rejected: duration {shell_duration:.1f}s < {MIN_SHELL_DURATION}s minimum")
+
+                            if valid_shell:
                                 # Record the shell
                                 shell = {
                                     'shell_number': len(shells) + 1,
@@ -2005,9 +2033,11 @@ if uploaded_files:
                                     'end_temp': end_peak_temp,
                                     'peak_idx': current_shell_peak_idx,
                                     'peak_temp': current_shell_peak_temp,
-                                    'duration': shell_duration
+                                    'duration': shell_duration,
+                                    'gap_from_previous': gap_from_previous if len(shells) > 0 else None
                                 }
                                 shells.append(shell)
+                                print(f"[DEBUG] Shell {len(shells)} detected: duration={shell_duration:.1f}s, gap={gap_from_previous:.1f}s")
 
                                 # Add to visualization arrays
                                 shell_start_x.append(time_data[current_shell_peak_idx])
@@ -2053,8 +2083,25 @@ if uploaded_files:
                     # Calculate shell duration
                     shell_duration = time_data[end_peak_idx] - time_data[current_shell_start_idx]
 
-                    # Only record shell if it meets minimum duration (filters noise)
+                    # Validate shell with two criteria
+                    valid_shell = False
+                    gap_from_previous = float('inf')
+
+                    # Check 1: Minimum duration (filters noise)
                     if shell_duration >= MIN_SHELL_DURATION:
+                        # Check 2: Minimum gap from previous shell (prevents merging)
+                        if len(shells) > 0:
+                            gap_from_previous = time_data[current_shell_start_idx] - shells[-1]['end_time']
+                            if gap_from_previous >= MIN_GAP_BETWEEN_SHELLS:
+                                valid_shell = True
+                            else:
+                                print(f"[DEBUG] Final shell rejected: gap {gap_from_previous:.1f}s < {MIN_GAP_BETWEEN_SHELLS}s minimum")
+                        else:
+                            valid_shell = True
+                    else:
+                        print(f"[DEBUG] Final shell rejected: duration {shell_duration:.1f}s < {MIN_SHELL_DURATION}s minimum")
+
+                    if valid_shell:
                         shell = {
                             'shell_number': len(shells) + 1,
                             'start_idx': current_shell_start_idx,
@@ -2065,9 +2112,11 @@ if uploaded_files:
                             'end_temp': end_peak_temp,
                             'peak_idx': current_shell_peak_idx,
                             'peak_temp': current_shell_peak_temp,
-                            'duration': shell_duration
+                            'duration': shell_duration,
+                            'gap_from_previous': gap_from_previous if len(shells) > 0 else None
                         }
                         shells.append(shell)
+                        print(f"[DEBUG] Final shell {len(shells)} detected: duration={shell_duration:.1f}s, gap={gap_from_previous:.1f}s")
                         shell_start_x.append(time_data[current_shell_peak_idx])
                         shell_start_y.append(current_shell_peak_temp)
                         shell_end_x.append(time_data[end_peak_idx])
@@ -2095,6 +2144,18 @@ if uploaded_files:
                 total_broken_pieces = len(broken_pieces)
                 total_pieces = total_shells_detected + total_broken_pieces
                 shattering_rate = (total_broken_pieces / total_pieces * 100) if total_pieces > 0 else 0
+
+                # Debug summary
+                print(f"\n[DEBUG] Shell Detection Summary for {actual_sensor}:")
+                print(f"  - Total shells detected: {total_shells_detected}")
+                print(f"  - Total broken pieces: {total_broken_pieces}")
+                print(f"  - Total pieces: {total_pieces}")
+                print(f"  - MIN_SHELL_DURATION: {MIN_SHELL_DURATION}s")
+                print(f"  - MIN_GAP_BETWEEN_SHELLS: {MIN_GAP_BETWEEN_SHELLS}s")
+                if shells:
+                    durations = [s['duration'] for s in shells]
+                    print(f"  - Shell durations: min={min(durations):.1f}s, max={max(durations):.1f}s, avg={np.mean(durations):.1f}s")
+                print(f"  - Temperature range: {np.min(temp_data):.1f}°C to {np.max(temp_data):.1f}°C\n")
 
                 # PLATEAU DETECTION FOR EACH SHELL
                 # Analyze temperature stability within each shell (1-2 second plateaus)
@@ -2779,4 +2840,5 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
